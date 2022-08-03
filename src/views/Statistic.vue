@@ -94,9 +94,7 @@
           </v-container>
           <v-alert type="error" class="mt-1" :value="alertErrorOrdersPerDate">
             <v-row align="center" justify="center" align-content="center">
-              <v-col class="grow">
-                Debes seleccionar una fecha
-              </v-col>
+              <v-col class="grow"> Debes seleccionar una fecha </v-col>
             </v-row>
           </v-alert>
         </div>
@@ -163,9 +161,7 @@
             :value="alertErrorCountSalesPerDate"
           >
             <v-row align="center" justify="center" align-content="center">
-              <v-col class="grow">
-                Debes seleccionar una fecha
-              </v-col>
+              <v-col class="grow"> Debes seleccionar una fecha </v-col>
             </v-row>
           </v-alert>
         </div>
@@ -375,7 +371,7 @@
         <v-data-table
           :headers="headersOrdersDate"
           :items="ordersPerDate"
-          :sort-by="['mes_id', 'mro_nombre', 'ord_estado']"
+          :sort-by="['id_board', 'e_name', 'o_status']"
           :sort-desc="[false, true]"
           class="container-inside"
         ></v-data-table>
@@ -397,7 +393,7 @@
         <v-data-table
           :headers="headersOrdersTable"
           :items="ordersPerTable"
-          :sort-by="['mro_nombre', 'ord_fecha_hora', 'ord_estado']"
+          :sort-by="['e_name', 'ord_fecha_hora', 'o_status']"
           :sort-desc="[false, true]"
           class="container-inside"
         ></v-data-table>
@@ -420,7 +416,7 @@
             Ordenes de
             {{
               typeof ordersPerEmployee[0] !== "undefined"
-                ? ordersPerEmployee[0].mro_nombre
+                ? ordersPerEmployee[0].e_name
                 : ""
             }}
           </v-toolbar-title>
@@ -428,7 +424,7 @@
         <v-data-table
           :headers="headersOrdersEmployee"
           :items="ordersPerEmployee"
-          :sort-by="['mes_id', 'ord_fecha_hora', 'ord_estado', 'pag_propina']"
+          :sort-by="['id_board', 'ord_fecha_hora', 'o_status', 'pag_propina']"
           :sort-desc="[false, true]"
           class="container-inside"
         ></v-data-table>
@@ -457,19 +453,19 @@ export default {
 
   data: () => ({
     headersOrdersDate: [
-      { text: "Mesa", align: "center", value: "mes_id" },
-      { text: "Mesero a cargo", align: "center", value: "mro_nombre" },
-      { text: "Estado", align: "center", value: "ord_estado" },
+      { text: "Mesa", align: "center", value: "id_board" },
+      { text: "Mesero a cargo", align: "center", value: "e_name" },
+      { text: "Estado", align: "center", value: "o_status" },
     ],
     headersOrdersTable: [
-      { text: "Mesero a cargo", align: "center", value: "mro_nombre" },
+      { text: "Mesero a cargo", align: "center", value: "e_name" },
       { text: "Hora", align: "center", value: "ord_fecha_hora" },
-      { text: "Estado", align: "center", value: "ord_estado" },
+      { text: "Estado", align: "center", value: "o_status" },
     ],
     headersOrdersEmployee: [
-      { text: "Mesa", align: "center", value: "mes_id" },
+      { text: "Mesa", align: "center", value: "id_board" },
       { text: "Hora", align: "center", value: "ord_fecha_hora" },
-      { text: "Estado", align: "center", value: "ord_estado" },
+      { text: "Estado", align: "center", value: "o_status" },
     ],
     months: [
       "Ene",
@@ -587,7 +583,10 @@ export default {
         "statistic/todayProfit/" + date.toString()
       );
 
-      this.todayProfit = apiData.data[0].pag_ganancia;
+      this.todayProfit =
+        typeof apiData.data[0].p_profit == "undefined"
+          ? 0.0
+          : apiData.data[0].p_profit;
     },
 
     async getMonthProfits() {
@@ -595,8 +594,8 @@ export default {
 
       for (let i = 0; i < 12; i++) {
         for (let j = 0; j < Object.keys(apiData.data).length; j++)
-          if (i == parseInt(apiData.data[j]["pag_ganancia_mes"]) - 1)
-            this.monthProfits[i] = parseFloat(apiData.data[j]["pag_ganancia"]);
+          if (i == parseInt(apiData.data[j]["p_month_profit"]) - 1)
+            this.monthProfits[i] = parseFloat(apiData.data[j]["p_profit"]);
         if (typeof this.monthProfits[i] === "undefined")
           this.monthProfits[i] = 0;
       }
@@ -609,11 +608,11 @@ export default {
       );
 
       for (let i = 0; i < apiData.data.length; i++) {
-        if (apiData.data[i].ord_estado == "a")
-          apiData.data[i].ord_estado = "Activa";
-        else if (apiData.data[i].ord_estado == "i")
-          apiData.data[i].ord_estado = "Pagada";
-        else apiData.data[i].ord_estado = "Pendiente";
+        if (apiData.data[i].o_status == "a")
+          apiData.data[i].o_status = "Activa";
+        else if (apiData.data[i].o_status == "i")
+          apiData.data[i].o_status = "Pagada";
+        else apiData.data[i].o_status = "Pendiente";
       }
 
       this.ordersPerDate = apiData.data;
@@ -628,11 +627,11 @@ export default {
       );
 
       for (let i = 0; i < apiData.data.length; i++) {
-        if (apiData.data[i].ord_estado == "a")
-          apiData.data[i].ord_estado = "Activa";
-        else if (apiData.data[i].ord_estado == "i")
-          apiData.data[i].ord_estado = "Pagada";
-        else apiData.data[i].ord_estado = "Pendiente";
+        if (apiData.data[i].o_status == "a")
+          apiData.data[i].o_status = "Activa";
+        else if (apiData.data[i].o_status == "i")
+          apiData.data[i].o_status = "Pagada";
+        else apiData.data[i].o_status = "Pendiente";
       }
 
       this.ordersPerTable = apiData.data;
@@ -647,11 +646,11 @@ export default {
       );
 
       for (let i = 0; i < apiData.data.length; i++) {
-        if (apiData.data[i].ord_estado == "a")
-          apiData.data[i].ord_estado = "Activa";
-        else if (apiData.data[i].ord_estado == "i")
-          apiData.data[i].ord_estado = "Pagada";
-        else apiData.data[i].ord_estado = "Pendiente";
+        if (apiData.data[i].o_status == "a")
+          apiData.data[i].o_status = "Activa";
+        else if (apiData.data[i].o_status == "i")
+          apiData.data[i].o_status = "Pagada";
+        else apiData.data[i].o_status = "Pendiente";
       }
 
       this.ordersPerEmployee = apiData.data;
@@ -701,8 +700,8 @@ export default {
 
       apiData.data.forEach((employee) =>
         this.employees.push({
-          text: employee.mro_nombre,
-          value: employee.mro_id,
+          text: employee.e_name,
+          value: employee.id_employee,
         })
       );
     },
@@ -712,8 +711,8 @@ export default {
 
       apiData.data.forEach((table) =>
         this.tables.push({
-          text: table.mes_id,
-          value: table.mes_id,
+          text: table.b_tag,
+          value: table.id_board,
         })
       );
     },

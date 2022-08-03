@@ -9,11 +9,6 @@ const routes = [
     redirect: "/table",
   },
   {
-    path: "/about",
-    name: "About",
-    component: () => import("../views/About.vue"),
-  },
-  {
     path: "/table",
     name: "Table",
     component: () => import("../views/Table.vue"),
@@ -24,9 +19,9 @@ const routes = [
     component: () => import("../views/Order.vue"),
   },
   {
-    path: "/food",
-    name: "Food",
-    component: () => import("../views/Food.vue"),
+    path: "/product",
+    name: "Product",
+    component: () => import("../views/Product.vue"),
   },
   {
     path: "/employee",

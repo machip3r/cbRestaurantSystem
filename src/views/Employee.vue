@@ -1,15 +1,11 @@
-<style lang="css">
-@import "../styles/app.css";
-</style>
-
 <template>
   <v-container class="container-inside">
     <h1 class="toolbar-title">Empleados</h1>
     <template>
       <v-card color="grey lighten-4">
         <v-toolbar dense color="primary" dark>
-          <v-toolbar-title class="toolbar-title"
-            >Agregar empleado
+          <v-toolbar-title class="toolbar-title">
+            Agregar empleado
           </v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
@@ -20,7 +16,7 @@
                 <v-col cols="5">
                   <v-text-field
                     class="mb-n8"
-                    v-model="nuevo_mesero.mro_nombre"
+                    v-model="newEmployee.e_name"
                     background-color="white"
                     label="Nombre"
                     solo
@@ -33,9 +29,9 @@
                 <v-col cols="5">
                   <v-text-field
                     class="mb-n8"
-                    v-model="nuevo_mesero.mro_direccion"
+                    v-model="newEmployee.e_phone"
                     background-color="white"
-                    label="Direccion"
+                    label="Teléfono"
                     solo
                     flat
                     dense
@@ -47,9 +43,9 @@
                 <v-col cols="5">
                   <v-text-field
                     class="mb-n8"
-                    v-model="nuevo_mesero.mro_correo"
+                    v-model="newEmployee.e_email"
                     background-color="white"
-                    label="Correo"
+                    label="Correo electrónico"
                     solo
                     flat
                     dense
@@ -59,9 +55,10 @@
                 <v-col cols="5">
                   <v-text-field
                     class="mb-n8"
-                    v-model="nuevo_mesero.mro_telefono"
+                    v-model="newEmployee.e_password"
                     background-color="white"
-                    label="Telefono"
+                    label="Contraseña"
+                    type="password"
                     solo
                     dense
                     flat
@@ -84,30 +81,25 @@
               </v-row>
               <v-row>
                 <v-col cols="5">
-                  <v-text-field
-                    class="mb-n8"
-                    v-model="nuevo_mesero.mro_sueldo"
-                    background-color="white"
-                    label="0.00"
-                    solo
-                    flat
-                    dense
-                    required
-                  ></v-text-field>
+                  <v-switch
+                    v-model="newEmployee.e_admin"
+                    inset
+                    label="Administrador"
+                  ></v-switch>
                 </v-col>
-                <v-col cols="5">
+                <!-- <v-col cols="5">
                   <v-file-input
                     class="mb-n5"
                     label="Seleccione su archivo"
                     filled
-                    v-model="nuevo_mesero.mro_foto"
+                    v-model="newEmployee.mro_foto"
                     prepend-icon="fas fa-camera"
                     background-color="white"
                     dense
                     solo
                     flat
                   ></v-file-input>
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-container>
           </template>
@@ -116,25 +108,29 @@
     </template>
     <template>
       <v-container fluid>
-        <v-data-iterator :items="meseros" item-key="mro_id" hide-default-footer>
+        <v-data-iterator
+          :items="employees"
+          item-key="id_employee"
+          hide-default-footer
+        >
           <template v-slot:header>
             <v-toolbar dark color="primary" class="mb-1">
               <v-select
-                v-model="filtro"
+                v-model="employeeFilter"
                 flat
                 solo-inverted
                 hide-details
                 :items="keys"
                 @change="cambio"
-                prepend-inner-icon="mdi-magnify"
+                prepend-inner-icon="fa fa-search"
               ></v-select>
             </v-toolbar>
           </template>
           <template>
             <v-row>
               <v-col
-                v-for="item in meseros"
-                :key="item.mro_id"
+                v-for="item in employees"
+                :key="item.id_employee"
                 cols="12"
                 sm="6"
                 md="4"
@@ -144,15 +140,13 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
-                      class="ma-1 "
+                      class="ma-1"
                       v-on:click="lanzarEditable(item)"
                       white
                       icon
                       color="primary"
                     >
-                      <v-icon dark>
-                        fas fa-pencil-alt
-                      </v-icon>
+                      <v-icon dark> fas fa-pencil-alt </v-icon>
                     </v-btn>
                   </v-card-actions>
 
@@ -164,19 +158,23 @@
                         size="200"
                         v-on:click="moreinformation(item)"
                       >
-                        <img
-                          v-bind:src="'http://localhost:3000/' + item.mro_foto"
-                        />
+                        <div
+                          style="
+                            width: 100px;
+                            height: 100px;
+                            background-color: black;
+                          "
+                        ></div>
                       </v-avatar>
                     </p>
-                    <h2>{{ item.mro_nombre }}</h2>
-                    <h4>{{ item.mro_telefono }}</h4>
+                    <h2>{{ item.e_name }}</h2>
+                    <h4>{{ item.e_password }}</h4>
 
                     <v-chip
                       class="ma-2"
                       color="green"
                       text-color="white"
-                      v-if="item.mro_estado === 'a'"
+                      v-if="item.e_status === 'a'"
                     >
                       Activo
                     </v-chip>
@@ -190,7 +188,7 @@
           </template>
         </v-data-iterator>
       </v-container>
-      <v-dialog v-model="dialog" hide-overlay persistent width="300">
+      <v-dialog v-model="loadingDialog" hide-overlay persistent width="300">
         <v-card color="primary" dark>
           <v-card-text>
             Cargando...
@@ -204,7 +202,7 @@
       </v-dialog>
     </template>
 
-    <v-dialog v-model="dialogo_editar" max-width="800">
+    <v-dialog v-model="updateDialog" max-width="800">
       <v-card>
         <v-toolbar dark class="mb-2 text-h5" color="primary">
           <v-toolbar-title>Editar empleado</v-toolbar-title>
@@ -220,7 +218,7 @@
                   <v-col cols="9">
                     <v-text-field
                       class="mb-n8"
-                      v-model="empleado_actualizar.mro_nombre"
+                      v-model="updatingEmployee.e_name"
                       background-color="white"
                       label="Nombre"
                       solo
@@ -235,7 +233,7 @@
                   <v-col cols="9">
                     <v-text-field
                       class="mb-n8"
-                      v-model="empleado_actualizar.mro_direccion"
+                      v-model="updatingEmployee.e_phone"
                       background-color="white"
                       label="Direccion"
                       solo
@@ -250,7 +248,7 @@
                   <v-col cols="9">
                     <v-text-field
                       class="mb-n8"
-                      v-model="empleado_actualizar.mro_correo"
+                      v-model="updatingEmployee.e_email"
                       background-color="white"
                       label="Correo"
                       solo
@@ -265,7 +263,7 @@
                   <v-col cols="9">
                     <v-text-field
                       class="mb-n8"
-                      v-model="empleado_actualizar.mro_telefono"
+                      v-model="updatingEmployee.e_password"
                       background-color="white"
                       label="Telefono"
                       solo
@@ -275,21 +273,15 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="3" class="text-right mt-3">
-                    <h3 class="black--text">Sueldo</h3>
+                    <h3 class="black--text">Administrador</h3>
                   </v-col>
                   <v-col cols="9">
-                    <v-text-field
-                      class="mb-n8"
-                      v-model="empleado_actualizar.mro_sueldo"
-                      background-color="white"
-                      label="0.00"
-                      solo
-                      outlined
-                      dense
-                      required
-                    ></v-text-field>
+                    <v-switch
+                      v-model="updatingEmployee.e_admin"
+                      inset
+                    ></v-switch>
                   </v-col>
-                  <v-col cols="3" class="text-right mt-3">
+                  <!-- <v-col cols="3" class="text-right mt-3">
                     <h3 class="black--text">Foto</h3>
                   </v-col>
                   <v-col cols="9">
@@ -297,13 +289,13 @@
                       class="mb-n5"
                       label="Seleccione su archivo"
                       filled
-                      v-model="empleado_actualizar.file"
+                      v-model="updatingEmployee.file"
                       prepend-icon="fas fa-camera"
                       dense
                       solo
                       outlined
                     ></v-file-input>
-                  </v-col>
+                  </v-col> -->
                 </v-row>
               </v-col>
             </v-row>
@@ -312,7 +304,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-switch
-            v-model="editar_activo"
+            v-model="updateStatusSwitch"
             label="Activo"
             key="editar"
             color="success"
@@ -331,29 +323,24 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogmore" max-width="300" max-height="300">
+    <v-dialog v-model="employeeDialog" max-width="300" max-height="300">
       <v-card align="center" align-content="center" justify="center">
         <v-toolbar dark class="mb-2 text-h5" color="primary">
-          <v-toolbar-title>{{ empleado_selected.mro_nombre }}</v-toolbar-title>
+          <v-toolbar-title>{{ selectedEmployee.e_name }}</v-toolbar-title>
         </v-toolbar>
 
         <v-card-text align-self="center">
-          <p>
-            <v-avatar color="grey" size="200" align-self="center">
-              <img v-bind:src="empleado_selected.mro_foto" />
-            </v-avatar>
-          </p>
           <p class="font-weight-black">
-            {{ empleado_selected.mro_direccion }}
+            {{ selectedEmployee.e_phone }}
           </p>
-          <a href="mailto:`${empleado_selected.mro_correo}`" target="_blank">
-            {{ empleado_selected.mro_correo }}
+          <a href="mailto:`${selectedEmployee.e_email}`" target="_blank">
+            {{ selectedEmployee.e_email }}
           </a>
           <p class="font-weight-black">
-            {{ empleado_selected.mro_telefono }}
+            {{ selectedEmployee.e_password }}
           </p>
           <p>
-            {{ "$ " + empleado_selected.mro_sueldo }}
+            {{ selectedEmployee.e_admin }}
           </p>
           <p>
             <v-switch
@@ -369,7 +356,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="dialogmore = false">
+          <v-btn color="primary" text @click="employeeDialog = false">
             Ok
           </v-btn>
         </v-card-actions>
@@ -382,38 +369,34 @@ export default {
   name: "Employee",
 
   data: () => ({
-    meseros: [],
-    nuevo_mesero: {
-      mro_nombre: "",
-      mro_direccion: "",
-      mro_correo: "",
-      mro_telefono: "",
-      mro_foto: [],
-      mro_sueldo: 0.0,
+    employees: [],
+    newEmployee: {
+      e_name: "",
+      e_phone: "",
+      e_email: "",
+      e_password: "",
+      e_admin: false,
     },
-    empleado_selected: {
-      mro_nombre: "",
-      mro_direccion: "",
-      mro_correo: "",
-      mro_telefono: "",
-      mro_foto: "",
-      mro_sueldo: 0.0,
+    selectedEmployee: {
+      e_name: "",
+      e_phone: "",
+      e_email: "",
+      e_password: "",
+      e_admin: false,
     },
-    empleado_actualizar: {
-      mro_nombre: "",
-      mro_direccion: "",
-      mro_correo: "",
-      mro_telefono: "",
-      file: undefined,
-      mro_foto: "",
-      mro_sueldo: 0.0,
+    updatingEmployee: {
+      e_name: "",
+      e_phone: "",
+      e_email: "",
+      e_password: "",
+      e_admin: false,
     },
-    dialog: false,
-    dialogmore: false,
+    loadingDialog: false,
+    employeeDialog: false,
     activo_inactivo: true,
-    dialogo_editar: false,
-    editar_activo: true,
-    filtro: "Todos",
+    updateDialog: false,
+    updateStatusSwitch: true,
+    employeeFilter: "Todos",
     keys: ["Todos", "Activos", "Inactivos"],
   }),
 
@@ -425,162 +408,113 @@ export default {
       this.getMeseros();
     },
     moreinformation(empleado) {
-      this.empleado_selected.mro_nombre = empleado.mro_nombre;
-      this.empleado_selected.mro_telefono = empleado.mro_telefono;
-      this.empleado_selected.mro_correo = empleado.mro_correo;
-      this.empleado_selected.mro_estado = empleado.mro_estado;
-      this.empleado_selected.mro_direccion = empleado.mro_domicilio;
-      this.empleado_selected.mro_sueldo = empleado.mro_sueldo;
-      this.empleado_selected.mro_id = empleado.mro_id;
-      this.empleado_selected.mro_foto =
-        "http://localhost:3000/" + empleado.mro_foto;
-      if (this.empleado_selected.mro_estado == "a") {
+      this.selectedEmployee.e_name = empleado.e_name;
+      this.selectedEmployee.e_password = empleado.e_password;
+      this.selectedEmployee.e_email = empleado.e_email;
+      this.selectedEmployee.e_status = empleado.e_status;
+      this.selectedEmployee.e_phone = empleado.e_phone;
+      this.selectedEmployee.e_admin = empleado.e_admin;
+      this.selectedEmployee.id_employee = empleado.id_employee;
+      if (this.selectedEmployee.e_status == "a") {
         this.activo_inactivo = true;
       } else {
         this.activo_inactivo = false;
       }
-      this.dialogmore = true;
+      this.employeeDialog = true;
     },
     limpiarEmpeladoSe() {
-      this.empleado_selected.mro_nombre = "";
-      this.empleado_selected.mro_telefono = "";
-      this.empleado_selected.mro_correo = "";
-      this.empleado_selected.mro_estado = "";
-      this.empleado_selected.mro_domicilio = "";
-      this.empleado_selected.mro_sueldo = "";
-      this.empleado_selected.mro_id = "";
-      this.empleado_selected.mro_foto = "";
+      this.selectedEmployee.e_name = "";
+      this.selectedEmployee.e_password = "";
+      this.selectedEmployee.e_email = "";
+      this.selectedEmployee.e_status = "";
+      this.selectedEmployee.e_phone = "";
+      this.selectedEmployee.e_admin = "";
+      this.selectedEmployee.id_employee = "";
     },
-    cambiarEstado() {
-      let estado = "";
-      if (this.empleado_selected.mro_estado == "a") {
-        estado = "i";
-      } else {
-        estado = "a";
-      }
+    async cambiarEstado() {
+      let status = "";
 
-      this.axios
-        .put("/mesero/cambiarEstado", {
-          mro_id: this.empleado_selected.mro_id,
-          mro_estado: estado,
-        })
-        .then((response) => {
-          this.getMeseros();
-          this.dialogmore = false;
-        })
-        .catch((e) => {
-          this.dialogmore = false;
-        });
+      this.selectedEmployee.e_status == "a" ? (status = "i") : (status = "a");
+
+      await this.axios.put("/employee/setStatusEmployee", {
+        id_employee: this.selectedEmployee.id_employee,
+        e_status: status,
+      });
+
+      this.getMeseros();
+      this.employeeDialog = false;
     },
     lanzarEditable(empleado) {
-      this.empleado_actualizar.mro_nombre = empleado.mro_nombre;
-      this.empleado_actualizar.mro_telefono = empleado.mro_telefono;
-      this.empleado_actualizar.mro_correo = empleado.mro_correo;
-      this.empleado_actualizar.mro_estado = empleado.mro_estado;
-      this.empleado_actualizar.mro_direccion = empleado.mro_domicilio;
-      this.empleado_actualizar.mro_sueldo = empleado.mro_sueldo;
-      this.empleado_actualizar.mro_id = empleado.mro_id;
-      this.empleado_actualizar.mro_foto = empleado.mro_foto;
-      if (this.empleado_actualizar.mro_estado == "a") {
-        this.editar_activo = true;
-      } else {
-        this.editar_activo = false;
-      }
-      this.dialogo_editar = true;
+      this.updatingEmployee.e_name = empleado.e_name;
+      this.updatingEmployee.e_password = empleado.e_password;
+      this.updatingEmployee.e_email = empleado.e_email;
+      this.updatingEmployee.e_status = empleado.e_status;
+      this.updatingEmployee.e_phone = empleado.e_phone;
+      this.updatingEmployee.e_admin = empleado.e_admin;
+      this.updatingEmployee.id_employee = empleado.id_employee;
+
+      this.updatingEmployee.e_status == "a"
+        ? (this.updateStatusSwitch = true)
+        : (this.updateStatusSwitch = false);
+
+      this.updateDialog = true;
     },
     async actualizarEmpleado() {
-      this.dialog = true;
-      if (this.editar_activo) {
-        this.empleado_actualizar.mro_estado = "a";
-      } else {
-        this.empleado_actualizar.mro_estado = "i";
-      }
+      this.loadingDialog = true;
 
-      if (this.empleado_actualizar.file != undefined) {
-        let form1 = new FormData();
-        form1.append("mro_nombre", this.empleado_actualizar.mro_nombre);
-        form1.append("mro_domicilio", this.empleado_actualizar.mro_direccion);
-        form1.append("mro_correo", this.empleado_actualizar.mro_correo);
-        form1.append("mro_telefono", this.empleado_actualizar.mro_telefono);
-        form1.append("mro_sueldo", this.empleado_actualizar.mro_sueldo);
-        form1.append("mro_estado", this.empleado_actualizar.mro_estado);
-        form1.append("mro_foto", this.empleado_actualizar.mro_foto);
-        form1.append("file", this.empleado_actualizar.file);
-        form1.append("mro_id", this.empleado_actualizar.mro_id);
-        await this.axios
-          .put("/mesero/actualizar", form1, {
-            headers: { "Content-Type": "multipart/form-data" },
-          })
-          .then((response) => {
-            this.getMeseros();
-            this.dialog = false;
-            this.dialogo_editar = false;
-          })
-          .catch((e) => {
-            this.dialog = false;
-            this.dialogo_editar = false;
-          });
-      } else {
-        await this.axios
-          .put("/mesero/actualizars", {
-            mro_nombre: this.empleado_actualizar.mro_nombre,
-            mro_domicilio: this.empleado_actualizar.mro_direccion,
-            mro_correo: this.empleado_actualizar.mro_correo,
-            mro_telefono: this.empleado_actualizar.mro_telefono,
-            mro_estado: this.empleado_actualizar.mro_estado,
-            mro_sueldo: this.empleado_actualizar.mro_sueldo,
-            mro_foto: this.empleado_actualizar.mro_foto,
-            mro_id: this.empleado_actualizar.mro_id,
-          })
-          .then((response) => {
-            this.getMeseros();
-            this.dialog = false;
-            this.dialogo_editar = false;
-          })
-          .catch((e) => {
-            this.dialog = false;
-            this.dialogo_editar = false;
-          });
-      }
+      this.updateStatusSwitch
+        ? (this.updatingEmployee.e_status = "a")
+        : (this.updatingEmployee.e_status = "i");
+
+      await this.axios.put("/employee/updateEmployee", {
+        e_name: this.updatingEmployee.e_name,
+        e_phone: this.updatingEmployee.e_phone,
+        e_email: this.updatingEmployee.e_email,
+        e_password: this.updatingEmployee.e_password,
+        e_admin: this.updatingEmployee.e_admin,
+        e_status: this.updatingEmployee.e_status,
+        id_employee: this.updatingEmployee.id_employee,
+      });
+
+      this.getMeseros();
+      this.loadingDialog = false;
+      this.updateDialog = false;
     },
 
     async getMeseros() {
       let apiData;
-      if (this.filtro == "Todos") {
-        apiData = await this.axios.get("/mesero/seleccionarTodos");
-        this.meseros = apiData.data;
-      } else if (this.filtro == "Activos") {
-        apiData = await this.axios.get("/mesero/activos");
-        this.meseros = apiData.data;
+
+      if (this.employeeFilter == "Todos") {
+        apiData = await this.axios.get("/employee/allEmployees");
+        this.employees = apiData.data;
+      } else if (this.employeeFilter == "Activos") {
+        apiData = await this.axios.get("/employee/activeEmployees");
+        this.employees = apiData.data;
       } else {
-        apiData = await this.axios.get("/mesero/inactivos");
-        this.meseros = apiData.data;
+        apiData = await this.axios.get("/employee/inactiveEmployees");
+        this.employees = apiData.data;
       }
     },
 
     async submit() {
-      this.dialog = true;
+      this.loadingDialog = true;
 
-      const form = new FormData();
-      form.append("mro_nombre", this.nuevo_mesero.mro_nombre);
-      form.append("mro_domicilio", this.nuevo_mesero.mro_direccion);
-      form.append("mro_correo", this.nuevo_mesero.mro_correo);
-      form.append("mro_telefono", this.nuevo_mesero.mro_telefono);
-      form.append("mro_sueldo", this.nuevo_mesero.mro_sueldo);
-      form.append("file", this.nuevo_mesero.mro_foto);
+      await this.axios.post("/employee/addEmployee", {
+        e_name: this.newEmployee.e_name,
+        e_phone: this.newEmployee.e_phone,
+        e_email: this.newEmployee.e_email,
+        e_password: this.newEmployee.e_password,
+        e_admin: this.newEmployee.e_admin,
+      });
 
-      await this.axios
-        .post("/mesero/nuevo", form, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          this.getMeseros();
-          this.dialog = false;
-        })
-        .catch((e) => {
-          console.log(e);
-          this.dialog = false;
-        });
+      this.newEmployee.e_name = "";
+      this.newEmployee.e_phone = "";
+      this.newEmployee.e_email = "";
+      this.newEmployee.e_password = "";
+      this.newEmployee.e_admin = false;
+
+      this.getMeseros();
+      this.loadingDialog = false;
     },
   },
   components: {},

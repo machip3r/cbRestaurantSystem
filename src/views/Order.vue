@@ -17,7 +17,7 @@
                   solo-inverted
                   hide-details
                   :items="employees"
-                  v-model="newOrder.mro_id"
+                  v-model="newOrder.id_employee"
                   label="Mesero a cargo"
                 >
                 </v-select>
@@ -28,7 +28,7 @@
                   solo-inverted
                   hide-details
                   :items="tables"
-                  v-model="newOrder.mes_id"
+                  v-model="newOrder.id_board"
                   label="Mesas disponibles"
                 >
                 </v-select>
@@ -93,7 +93,9 @@
               <v-card dense color="primary">
                 <v-card-title class="subheading font-weight-bold">
                   <v-toolbar dark flat color="primary">
-                    <v-toolbar-title> Mesa {{ order.mes_id }} </v-toolbar-title>
+                    <v-toolbar-title>
+                      Mesa "{{ order.b_tag }}"
+                    </v-toolbar-title>
                   </v-toolbar>
                   <v-spacer></v-spacer>
                   <v-btn icon color="white" @click="openSubOrderDialog(order)">
@@ -109,13 +111,13 @@
                   <v-list-item>
                     <v-list-item-content>Mesero a cargo:</v-list-item-content>
                     <v-list-item-content class="align-end">
-                      {{ order.mro_nombre }}
+                      {{ order.e_name }}
                     </v-list-item-content>
                   </v-list-item>
                   <v-list-item>
                     <v-list-item-content>Fecha y hora:</v-list-item-content>
                     <v-list-item-content class="align-end">
-                      {{ order.ord_fecha_hora }}
+                      {{ order.o_datetime }}
                     </v-list-item-content>
                   </v-list-item>
                   <v-list-item>
@@ -127,7 +129,7 @@
                   <v-list-item>
                     <v-list-item-content>Cuenta:</v-list-item-content>
                     <v-list-item-content class="align-end">
-                      ${{ parseFloat(order.ord_precio).toFixed(2) }}
+                      ${{ parseFloat(order.o_price).toFixed(2) }}
                     </v-list-item-content>
                   </v-list-item>
                 </v-list>
@@ -156,7 +158,9 @@
               <v-card dense color="secondary">
                 <v-card-title class="subheading font-weight-bold">
                   <v-toolbar flat color="secondary">
-                    <v-toolbar-title> Mesa {{ order.mes_id }} </v-toolbar-title>
+                    <v-toolbar-title>
+                      Mesa "{{ order.b_tag }}"
+                    </v-toolbar-title>
                   </v-toolbar>
                   <v-spacer></v-spacer>
                   <v-btn icon color="black" @click="openSubOrderDialog(order)">
@@ -171,13 +175,13 @@
                   <v-list-item>
                     <v-list-item-content>Mesero a cargo:</v-list-item-content>
                     <v-list-item-content class="align-end">
-                      {{ order.mro_nombre }}
+                      {{ order.e_name }}
                     </v-list-item-content>
                   </v-list-item>
                   <v-list-item>
                     <v-list-item-content>Fecha y hora:</v-list-item-content>
                     <v-list-item-content class="align-end">
-                      {{ order.ord_fecha_hora }}
+                      {{ order.o_datetime }}
                     </v-list-item-content>
                   </v-list-item>
                   <v-list-item>
@@ -195,12 +199,8 @@
 
       <v-dialog v-model="cDeleteDialog" max-width="300">
         <v-card>
-          <v-card-title class="text-h5">
-            ¿Estás seguro?
-          </v-card-title>
-          <v-card-text>
-            Esta acción es irreversible.
-          </v-card-text>
+          <v-card-title class="text-h5"> ¿Estás seguro? </v-card-title>
+          <v-card-text> Esta acción es irreversible. </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary darken-1" text @click="cancelDeleteOrder()">
@@ -220,7 +220,7 @@
       >
         <v-card>
           <v-toolbar dark class="toolbar-title" color="primary">
-            <v-toolbar-title> Mesa {{ this.order.mes_id }} </v-toolbar-title>
+            <v-toolbar-title> Mesa "{{ this.order.b_tag }}" </v-toolbar-title>
           </v-toolbar>
           <v-data-table
             class="container-inside"
@@ -241,7 +241,7 @@
             <v-btn
               color="green darken-1"
               text
-              @click="newSubOrderDialog = true"
+              @click="newSuborderDialog = true"
             >
               Agregar Suborden
             </v-btn>
@@ -251,7 +251,7 @@
 
       <v-dialog
         class="toolbar-subtitle"
-        v-model="newSubOrderDialog"
+        v-model="newSuborderDialog"
         max-width="500"
       >
         <v-card>
@@ -262,24 +262,20 @@
             <v-container>
               <v-row>
                 <v-col>
-                  <v-select
-                    :items="asientosTotales"
-                    label="Asiento"
-                    v-model="newSubOrder.sub_asiento"
-                  >
-                  </v-select>
+                  <v-text-field v-model="newSuborder.s_tag" label="Etiqueta">
+                  </v-text-field>
                 </v-col>
                 <v-col>
                   <v-select
-                    :items="comidas"
-                    label="Comida"
-                    v-model="newSubOrder.sub_com_id"
+                    :items="products"
+                    label="Producto"
+                    v-model="newSuborder.id_product"
                   >
                   </v-select>
                 </v-col>
                 <v-col>
                   <v-text-field
-                    v-model="newSubOrder.sub_cant"
+                    v-model="newSuborder.s_cuantity"
                     label="Cantidad"
                     type="Number"
                     min="1"
@@ -353,7 +349,7 @@
                               <h3>${{ this.subtotal }}</h3>
                             </v-row>
                             <v-row>
-                              <h2>Total (10% IVA):</h2>
+                              <h2>Total:</h2>
                               <v-spacer></v-spacer>
                               <h2>${{ this.total }}</h2>
                             </v-row>
@@ -403,12 +399,10 @@
                       v-for="(suborder, index) in subOrders"
                       v-bind:key="index"
                     >
-                      <v-col>{{ suborder.cant_total_comida }}</v-col>
-                      <v-col>{{ suborder.com_nombre }}</v-col>
+                      <v-col>{{ suborder.s_cuantity }}</v-col>
+                      <v-col>{{ suborder.p_name }}</v-col>
                       <v-col
-                        >${{
-                          parseFloat(suborder.total_neto).toFixed(2)
-                        }}</v-col
+                        >${{ parseFloat(suborder.total).toFixed(2) }}</v-col
                       >
                     </v-row>
                   </div>
@@ -435,15 +429,11 @@
       </v-dialog>
       <v-dialog v-model="cPaymentDialog" max-width="300">
         <v-card>
-          <v-card-title class="text-h5">
-            Confirmar pago
-          </v-card-title>
-          <v-card-text>
-            Selecciona un método de pago
-          </v-card-text>
+          <v-card-title class="text-h5"> Confirmar pago </v-card-title>
+          <v-card-text> Selecciona un método de pago </v-card-text>
           <v-form>
             <v-text-field
-              v-model="newPayment.pag_propina"
+              v-model="newPayment.p_tip"
               :rule="propinaRules"
               label="Propina"
               placeholder="¿Hubo propina?"
@@ -453,7 +443,7 @@
               required
             ></v-text-field>
             <v-select
-              v-model="newPayment.pag_tipo_pago"
+              v-model="newPayment.p_type"
               flat
               solo-inverted
               hide-details
@@ -494,8 +484,8 @@ export default {
     employees: [],
     tables: [],
     newOrder: {
-      mro_id: "",
-      mes_id: "",
+      id_employee: "",
+      id_board: "",
     },
 
     cDeleteDialog: false,
@@ -506,31 +496,30 @@ export default {
 
     // SUBORDERS
     headersSubOrdersDialog: [
-      { text: "Asiento", value: "sub_asiento" },
-      { text: "Comida", value: "com_nombre" },
-      { text: "Cantidad", value: "sub_cant" },
-      { text: "Costo", value: "sub_precio" },
+      { text: "Etiqueta", value: "s_tag" },
+      { text: "Comida", value: "p_name" },
+      { text: "Cantidad", value: "s_cuantity" },
+      { text: "Costo", value: "s_price" },
       { text: "Acciones", value: "actions" },
     ],
 
-    newSubOrder: {
-      sub_ord_id: "",
-      sub_com_id: "",
-      sub_asiento: "",
-      sub_cant: "",
+    newSuborder: {
+      id_order: "",
+      id_product: "",
+      s_tag: "",
+      s_cuantity: "",
     },
-    comidas: [],
-    asientosTotales: [],
+    products: [],
     subOrdersForDialog: [],
 
     subOrdersDialog: false,
-    newSubOrderDialog: false,
+    newSuborderDialog: false,
 
     // PAYMENTS
     headers: [
-      { text: "Comida", align: "center", value: "com_nombre" },
-      { text: "Cantidad", align: "center", value: "cant_total_comida" },
-      { text: "Total", align: "center", value: "total_neto" },
+      { text: "Comida", align: "center", value: "p_name" },
+      { text: "Cantidad", align: "center", value: "s_cuantity" },
+      { text: "Total", align: "center", value: "total" },
     ],
 
     paymentMethods: [{ text: "Efectivo" }, { text: "Tarjeta" }],
@@ -549,11 +538,11 @@ export default {
     idOrder: "",
     employeeName: "",
     newPayment: {
-      pag_ord_id: "",
-      pag_subtotal: "",
-      pag_total: "",
-      pag_propina: 0,
-      pag_tipo_pago: "Efectivo",
+      id_order: "",
+      p_subtotal: "",
+      p_total: "",
+      p_tip: 0,
+      p_type: "Efectivo",
     },
   }),
 
@@ -580,7 +569,7 @@ export default {
       if (!isOpen) this.cancelarSuborders();
     },
 
-    newSubOrderDialog(isOpen) {
+    newSuborderDialog(isOpen) {
       if (!isOpen) this.cancelarAddSub();
     },
 
@@ -621,8 +610,8 @@ export default {
 
       apiData.data.forEach((employee) =>
         this.employees.push({
-          text: employee.mro_nombre,
-          value: employee.mro_id,
+          text: employee.e_name,
+          value: employee.id_employee,
         })
       );
     },
@@ -632,8 +621,8 @@ export default {
 
       apiData.data.forEach((table) =>
         this.tables.push({
-          text: table.mes_id,
-          value: table.mes_id,
+          text: table.b_tag,
+          value: table.id_board,
         })
       );
     },
@@ -643,8 +632,8 @@ export default {
       this.loadingAddOrder = true;
 
       if (
-        typeof this.newOrder.mro_id !== "undefined" &&
-        typeof this.newOrder.mes_id !== "undefined"
+        typeof this.newOrder.id_employee !== "undefined" &&
+        typeof this.newOrder.id_board !== "undefined"
       ) {
         await this.axios.post("order/addOrder/", this.newOrder);
         this.alertNewOrder = true;
@@ -686,26 +675,23 @@ export default {
 
     // SUBORDERS
 
-    async getSuborders(mes_id, ord_id) {
+    async getSuborders(id_board, id_order) {
       this.subOrdersDialog = true;
-      const apiData = await this.axios.get(
-        "table/allSuborders/" + mes_id.toString() + "/" + ord_id.toString()
-      );
 
-      if (mes_id === 1 || mes_id === 6 || mes_id === 11)
-        this.asientosTotales = [1, 2, 3, 4, 5, 6, 7, 8];
-      else this.asientosTotales = [1, 2, 3, 4];
+      const apiData = await this.axios.get(
+        "table/allSuborders/" + id_board + "/" + id_order
+      );
 
       this.subOrdersForDialog = apiData.data;
     },
 
     async readFood() {
-      const apiData = await this.axios.get("/food/all_foods");
+      const apiData = await this.axios.get("/product/allProducts");
 
       apiData.data.forEach((comida) =>
-        this.comidas.push({
-          text: comida.com_nombre,
-          value: comida.com_id,
+        this.products.push({
+          text: comida.p_name,
+          value: comida.id_product,
         })
       );
     },
@@ -714,21 +700,21 @@ export default {
       this.order = order;
       this.subOrdersDialog = true;
       this.readFood();
-      this.getSuborders(order.mes_id, order.ord_id);
+      this.getSuborders(order.id_board, order.id_order);
     },
 
     cancelarAddSub() {
       this.getActiveOrders();
       this.getWaitingOrders();
-      this.newSubOrderDialog = false;
+      this.newSuborderDialog = false;
     },
 
     cancelarSuborders() {
-      this.newSubOrder = {
-        sub_ord_id: "",
-        sub_com_id: "",
-        sub_asiento: "",
-        sub_cant: "",
+      this.newSuborder = {
+        id_order: "",
+        id_product: "",
+        s_tag: "",
+        s_cuantity: "",
       };
       this.getActiveOrders();
       this.getWaitingOrders();
@@ -736,30 +722,30 @@ export default {
     },
 
     async agregar_suborden() {
-      this.newSubOrder.sub_ord_id = this.order.ord_id;
-      await this.axios.post("table/addSuborder/", this.newSubOrder);
-      this.getSuborders(this.order.mes_id, this.order.ord_id);
-      this.newSubOrder = {
-        sub_ord_id: "",
-        sub_com_id: "",
-        sub_asiento: "",
-        sub_cant: "",
+      this.newSuborder.id_order = this.order.id_order;
+      await this.axios.post("table/addSuborder/", this.newSuborder);
+      this.getSuborders(this.order.id_board, this.order.id_order);
+      this.newSuborder = {
+        id_order: "",
+        id_product: "",
+        s_tag: "",
+        s_cuantity: "",
       };
-      this.newSubOrderDialog = false;
+      this.newSuborderDialog = false;
     },
 
     async eliminarSuborden(item) {
       const data = {
-        sub_id: item.sub_id,
+        id_suborder: item.id_suborder,
       };
       await this.axios.post("table/deleteSuborder", data);
-      this.getSuborders(this.order.mes_id, this.order.ord_id);
+      this.getSuborders(this.order.id_board, this.order.id_order);
     },
 
     // PAYMENTS
     async showOrdersPerTable(idOrder) {
       const apiData = await this.axios.get(
-        "/payment/showOrdersPerTable/" + idOrder.toString()
+        "payment/showOrdersPerTable/" + idOrder.toString()
       );
 
       this.subOrders = apiData.data;
@@ -767,33 +753,36 @@ export default {
 
     async showOrderTotal(idOrder) {
       const apiData = await this.axios.get(
-        "/payment/orderTotal/" + idOrder.toString()
+        "payment/orderTotal/" + idOrder.toString()
       );
       this.idOrder = idOrder;
-      this.subtotal = parseFloat(apiData.data[0].total_orden).toFixed(2);
+      this.subtotal = parseFloat(apiData.data[0].order_total).toFixed(2);
     },
 
     async showOrderTotalIVA(idOrder) {
+      /* const apiData = await this.axios.get(
+        "payment/orderTotalIVA/" + idOrder.toString()
+      ); */
       const apiData = await this.axios.get(
-        "/payment/orderTotalIVA/" + idOrder.toString()
+        "payment/orderTotal/" + idOrder.toString()
       );
       this.idOrder = idOrder;
-      this.total = parseFloat(apiData.data[0].total_orden).toFixed(2);
+      this.total = parseFloat(apiData.data[0].order_total).toFixed(2);
     },
 
     async insertPayment() {
-      this.newPayment.pag_ord_id = this.idOrder;
-      this.newPayment.pag_subtotal = this.subtotal;
-      this.newPayment.pag_total = this.total;
+      this.newPayment.id_order = this.idOrder;
+      this.newPayment.p_subtotal = this.subtotal;
+      this.newPayment.p_total = this.total;
 
-      await this.axios.post("/payment/insertPayment", this.newPayment);
+      await this.axios.post("payment/addPayment", this.newPayment);
 
       this.newPayment = {
-        pag_ord_id: "",
-        pag_subtotal: "",
-        pag_total: "",
-        pag_propina: 0,
-        pag_tipo_pago: "Efectivo",
+        id_order: "",
+        p_subtotal: "",
+        p_total: "",
+        p_tip: 0,
+        p_type: "Efectivo",
       };
     },
 
@@ -802,11 +791,11 @@ export default {
     },
 
     openPaymentDialog(order) {
-      this.showOrdersPerTable(order.ord_id);
-      this.showOrderTotal(order.ord_id);
-      this.showOrderTotalIVA(order.ord_id);
-      this.idTable = order.mes_id;
-      this.employeeName = order.mro_nombre;
+      this.showOrdersPerTable(order.id_order);
+      this.showOrderTotal(order.id_order);
+      this.showOrderTotalIVA(order.id_order);
+      this.idTable = order.id_board;
+      this.employeeName = order.e_name;
       this.pDialog = true;
     },
 
