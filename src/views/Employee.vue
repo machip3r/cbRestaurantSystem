@@ -315,6 +315,15 @@
           <v-btn
             depressed
             class="l-14"
+            v-on:click="eliminarEmpleado()"
+            color="error"
+          >
+            Eliminar
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn
+            depressed
+            class="l-14"
             v-on:click="actualizarEmpleado()"
             color="primary"
           >
@@ -473,6 +482,18 @@ export default {
         e_password: this.updatingEmployee.e_password,
         e_admin: this.updatingEmployee.e_admin,
         e_status: this.updatingEmployee.e_status,
+        id_employee: this.updatingEmployee.id_employee,
+      });
+
+      this.getMeseros();
+      this.loadingDialog = false;
+      this.updateDialog = false;
+    },
+
+    async eliminarEmpleado() {
+      this.loadingDialog = true;
+
+      await this.axios.post("/employee/deleteEmployee", {
         id_employee: this.updatingEmployee.id_employee,
       });
 

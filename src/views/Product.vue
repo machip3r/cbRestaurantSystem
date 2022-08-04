@@ -116,7 +116,7 @@
                         {{ btn_text }}
                       </v-btn>
                     </v-col>
-                    <v-col v-if="edit_mode" cols="10">
+                    <v-col v-if="updateMode" cols="10">
                       <v-btn
                         class="px-7 font-weight-black"
                         color="accent"
@@ -257,7 +257,7 @@ export default {
   data: () => ({
     valid: false,
     dialog: false,
-    edit_mode: false,
+    updateMode: false,
     deleteDialog: false,
     actualProduct: {},
     priceRules: [
@@ -322,7 +322,7 @@ export default {
       await this.axios.post("product/updateProduct", this.newProduct);
       this.get_all_foods();
       this.newProduct = {};
-      this.edit_mode = false;
+      this.updateMode = false;
       this.$refs.form.reset();
     },
     async change_state_food(item) {
@@ -335,17 +335,17 @@ export default {
       this.get_all_foods();
     },
     edit_food(item) {
-      this.edit_mode = true;
+      this.updateMode = true;
       this.newProduct = item;
     },
     cancel_edit() {
-      this.edit_mode = false;
+      this.updateMode = false;
       this.newProduct = {};
       this.$refs.form.reset();
     },
     submit_form() {
       if (this.$refs.form.validate())
-        this.edit_mode ? this.updateProduct() : this.save_food();
+        this.updateMode ? this.updateProduct() : this.save_food();
     },
     open_deleteDialog(item) {
       this.actualProduct = item;
@@ -382,7 +382,7 @@ export default {
           });
     },
     btn_text: function () {
-      return this.edit_mode ? "Guardar" : "Agregar";
+      return this.updateMode ? "Guardar" : "Agregar";
     },
   },
   components: {},
