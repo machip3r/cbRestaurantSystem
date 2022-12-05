@@ -391,6 +391,64 @@
       </v-row>
     </v-container> -->
 
+    <v-card color="grey lighten-4">
+      <v-toolbar dark flat dense color="primary">
+        <v-toolbar-title>Agregar mesa</v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+      <v-card-text class="container-inside">
+        <template>
+          <v-row justify="center" align="center" align-content="center">
+            <v-col cols="10">
+              <v-text-field
+                class="mt-5"
+                v-model="newTable.b_tag"
+                background-color="white"
+                label="Nombre o etiqueta de la mesa"
+                flat
+                solo
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col cols="2">
+              <v-btn
+                class="mb-2"
+                :loading="loadingAddTable"
+                :disabled="loadingAddTable"
+                color="accent"
+                @click="addTable()"
+              >
+                Agregar
+                <template v-slot:loader>
+                  <span class="custom-loader">
+                    <v-icon size="18">fas fa-sync-alt</v-icon>
+                  </span>
+                </template>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </template>
+      </v-card-text>
+    </v-card>
+    <v-alert
+      :value="alertNewTable"
+      icon="fas fa-check-circle"
+      transition="scale-transition"
+      class="mt-2"
+      type="success"
+    >
+      Se añadió una nueva mesa.
+    </v-alert>
+    <v-alert
+      :value="alertEmptyNewTable"
+      icon="fas fa-exclamation-circle"
+      transition="scale-transition"
+      class="mt-2"
+      type="error"
+    >
+      Debes de asignar una etiqueta o nombre a la mesa.
+    </v-alert>
+
     <v-container>
       <v-row>
         <v-col>
@@ -444,14 +502,12 @@
           :items="suborders"
         >
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon @click="eliminarSuborden(item)" small>
-              fas fa-trash
-            </v-icon>
+            <v-icon @click="deleteSuborder(item)" small> fas fa-trash </v-icon>
           </template>
         </v-data-table>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary darken-1" text @click="cancelarSuborders()">
+          <v-btn color="primary darken-1" text @click="closeSubordersDialog()">
             Cerrar
           </v-btn>
           <v-btn color="green darken-1" text @click="openNewSuborderDialog()">
@@ -502,7 +558,7 @@
           <v-btn color="primary darken-1" text @click="cancelarAddSub()">
             Cancelar
           </v-btn>
-          <v-btn color="green darken-1" text @click="agregar_suborden()">
+          <v-btn color="green darken-1" text @click="addSuborder()">
             Agregar
           </v-btn>
         </v-card-actions>
@@ -522,9 +578,9 @@ export default {
   data() {
     return {
       headersTables: [
-        { text: "Etiqueta", value: "b_tag" },
-        { text: "Estado", value: "b_disponibility" },
-        { text: "Acciones", value: "actions" },
+        { text: "Etiqueta", value: "b_tag", class: "primary" },
+        { text: "Estado", value: "b_disponibility", class: "primary" },
+        { text: "Acciones", value: "actions", class: "primary" },
       ],
       headersTable: [
         { text: "Etiqueta", value: "s_tag" },
@@ -540,6 +596,9 @@ export default {
         s_tag: "",
         s_cuantity: "",
       },
+      newTable: {
+        b_tag: "",
+      },
 
       actualTable: "",
       actualTag: "",
@@ -554,6 +613,10 @@ export default {
 
       suborderDialog: false,
       newSuborderDialog: false,
+      loader: null,
+      loadingAddTable: false,
+      alertNewTable: false,
+      alertEmptyNewTable: false,
     };
   },
 
@@ -561,21 +624,77 @@ export default {
     /* this.getSpacesTables(); */
     this.getTables();
     this.getActiveTables();
-    this.readFood();
-    this.orden_correcta();
+    this.getAllProducts();
+    this.getTableOrders();
   },
 
   watch: {
     suborderDialog(isOpen) {
-      if (!isOpen) this.cancelarSuborders();
+      if (!isOpen) this.closeSubordersDialog();
     },
 
     newSuborderDialog(isOpen) {
       if (!isOpen) this.cancelarAddSub();
     },
+    alertNewTable(value) {
+      if (!value) return;
+
+      setTimeout(() => (this.alertNewTable = false), 3000);
+    },
+
+    alertEmptyNewTable(value) {
+      if (!value) return;
+
+      setTimeout(() => (this.alertEmptyNewTable = false), 3000);
+    },
   },
 
   methods: {
+    async addTable() {
+      this.loader = "loadingAddTable";
+      this.loadingAddTable = true;
+
+      if (this.newTable.b_tag != "") {
+        await this.axios.post("table/addTable", this.newTable);
+        this.alertNewTable = true;
+      } else this.alertEmptyNewTable = true;
+
+      this.getTables();
+      this.getActiveTables();
+      this.newTable.b_tag = "";
+      this.newTable = {};
+      this.loader = null;
+      this.loadingAddTable = false;
+    },
+
+    async updateTable(table) {
+      // open dialog
+      /* this.updatingEmployee.e_name = empleado.e_name;
+      this.updatingEmployee.e_password = empleado.e_password;
+      this.updatingEmployee.e_email = empleado.e_email;
+      this.updatingEmployee.e_status = empleado.e_status;
+      this.updatingEmployee.e_phone = empleado.e_phone;
+      this.updatingEmployee.e_admin = empleado.e_admin;
+      this.updatingEmployee.id_employee = empleado.id_employee;
+
+      this.updatingEmployee.e_status == "a"
+        ? (this.updateStatusSwitch = true)
+        : (this.updateStatusSwitch = false);
+
+      this.updateDialog = true; */
+    },
+
+    async deleteTable(table) {
+      // dialog de confirmación
+      /* this.updatingEmployee.id_employee = empleado.id_employee;
+
+      this.updatingEmployee.e_status == "a"
+        ? (this.updateStatusSwitch = true)
+        : (this.updateStatusSwitch = false);
+
+      this.updateDialog = true; */
+    },
+
     async getTables() {
       const apiData = await this.axios.get("table/allTables/");
 
@@ -637,7 +756,7 @@ export default {
       return true;
     }, */
 
-    async readFood() {
+    async getAllProducts() {
       const apiData = await this.axios.get("product/allProducts");
 
       apiData.data.forEach((product) => {
@@ -650,7 +769,7 @@ export default {
       });
     },
 
-    async agregar_suborden() {
+    async addSuborder() {
       await this.axios.post("table/addSuborder/", this.newSuborder);
 
       this.getSuborders(this.actualTable, this.actuaIDOrder);
@@ -685,7 +804,7 @@ export default {
       /* this.getSpacesTables(); */
     },
 
-    cancelarSuborders() {
+    closeSubordersDialog() {
       this.newSuborder = {
         id_order: "",
         id_product: "",
@@ -698,7 +817,7 @@ export default {
       /* this.getSpacesTables(); */
     },
 
-    async orden_correcta() {
+    async getTableOrders() {
       const apiData = await this.axios.get("table/orderTable/");
 
       apiData.data.forEach((orden_c) =>
@@ -709,7 +828,7 @@ export default {
       );
     },
 
-    async eliminarSuborden(item) {
+    async deleteSuborder(item) {
       const data = {
         id_suborder: item.id_suborder,
       };

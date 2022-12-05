@@ -94,7 +94,7 @@
                 <v-card-title class="subheading font-weight-bold">
                   <v-toolbar dark flat color="primary">
                     <v-toolbar-title>
-                      Mesa "{{ order.b_tag }}"
+                      "{{ order.b_tag }}"
                     </v-toolbar-title>
                   </v-toolbar>
                   <v-spacer></v-spacer>
@@ -159,7 +159,7 @@
                 <v-card-title class="subheading font-weight-bold">
                   <v-toolbar flat color="secondary">
                     <v-toolbar-title>
-                      Mesa "{{ order.b_tag }}"
+                      "{{ order.b_tag }}"
                     </v-toolbar-title>
                   </v-toolbar>
                   <v-spacer></v-spacer>
@@ -235,7 +235,11 @@
           </v-data-table>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary darken-1" text @click="cancelarSuborders()">
+            <v-btn
+              color="primary darken-1"
+              text
+              @click="closeSubordersDialog()"
+            >
               Cerrar
             </v-btn>
             <v-btn
@@ -290,7 +294,7 @@
             <v-btn color="primary darken-1" text @click="cancelarAddSub()">
               Cancelar
             </v-btn>
-            <v-btn color="green darken-1" text @click="agregar_suborden()">
+            <v-btn color="green darken-1" text @click="addSuborder()">
               Agregar
             </v-btn>
           </v-card-actions>
@@ -566,7 +570,7 @@ export default {
 
     // SUBORDERS
     subOrdersDialog(isOpen) {
-      if (!isOpen) this.cancelarSuborders();
+      if (!isOpen) this.closeSubordersDialog();
     },
 
     newSuborderDialog(isOpen) {
@@ -675,7 +679,7 @@ export default {
 
     // SUBORDERS
 
-    async getSuborders(id_board, id_order) {
+    async getSubordersByTableAndOrder(id_board, id_order) {
       this.subOrdersDialog = true;
 
       const apiData = await this.axios.get(
@@ -685,7 +689,7 @@ export default {
       this.subOrdersForDialog = apiData.data;
     },
 
-    async readFood() {
+    async getAllProducts() {
       const apiData = await this.axios.get("/product/allProducts");
 
       apiData.data.forEach((comida) =>
@@ -699,8 +703,8 @@ export default {
     openSubOrderDialog(order) {
       this.order = order;
       this.subOrdersDialog = true;
-      this.readFood();
-      this.getSuborders(order.id_board, order.id_order);
+      this.getAllProducts();
+      this.getSubordersByTableAndOrder(order.id_board, order.id_order);
     },
 
     cancelarAddSub() {
@@ -709,7 +713,7 @@ export default {
       this.newSuborderDialog = false;
     },
 
-    cancelarSuborders() {
+    closeSubordersDialog() {
       this.newSuborder = {
         id_order: "",
         id_product: "",
@@ -721,10 +725,16 @@ export default {
       this.subOrdersDialog = false;
     },
 
-    async agregar_suborden() {
+    async addSuborder() {
       this.newSuborder.id_order = this.order.id_order;
+
       await this.axios.post("table/addSuborder/", this.newSuborder);
-      this.getSuborders(this.order.id_board, this.order.id_order);
+
+      this.getSubordersByTableAndOrder(
+        this.order.id_board,
+        this.order.id_order
+      );
+
       this.newSuborder = {
         id_order: "",
         id_product: "",
@@ -739,7 +749,10 @@ export default {
         id_suborder: item.id_suborder,
       };
       await this.axios.post("table/deleteSuborder", data);
-      this.getSuborders(this.order.id_board, this.order.id_order);
+      this.getSubordersByTableAndOrder(
+        this.order.id_board,
+        this.order.id_order
+      );
     },
 
     // PAYMENTS

@@ -584,9 +584,7 @@ export default {
       );
 
       this.todayProfit =
-        typeof apiData.data[0].p_profit == "undefined"
-          ? 0.0
-          : apiData.data[0].p_profit;
+        typeof apiData.data[0] == "undefined" ? 0.0 : apiData.data[0].p_profit;
     },
 
     async getMonthProfits() {

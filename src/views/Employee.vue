@@ -72,7 +72,7 @@
                       dark
                       large
                       color="accent"
-                      @click="submit()"
+                      @click="submitForm()"
                     >
                       Agregar
                     </v-btn>
@@ -108,7 +108,43 @@
     </template>
     <template>
       <v-container fluid>
-        <v-data-iterator
+        <v-card>
+          <v-toolbar flat color="primary">
+            <v-select
+              v-model="employeeFilter"
+              flat
+              solo
+              hide-details
+              :items="keys"
+              @change="cambio"
+              prepend-inner-icon="fa fa-search"
+            ></v-select>
+          </v-toolbar>
+          <v-data-table
+            :headers="headers"
+            :items="employees"
+            multi-sort
+            class="elevation-1"
+          >
+            <template v-slot:[`item.e_status`]="{ item }">
+              <v-chip :color="getStatusColor(item)">
+                {{ getStatusText(item) }}
+              </v-chip>
+            </template>
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-icon @click="getEmployeeInformation(item)" small>
+                fas fa-eye
+              </v-icon>
+              <v-icon @click="openUpdateEmployeeDialog(item)" small>
+                fas fa-pen
+              </v-icon>
+              <v-icon @click="deleteEmployee(item)" small>
+                fas fa-trash
+              </v-icon>
+            </template>
+          </v-data-table>
+        </v-card>
+        <!-- <v-data-iterator
           :items="employees"
           item-key="id_employee"
           hide-default-footer
@@ -141,7 +177,7 @@
                     <v-spacer></v-spacer>
                     <v-btn
                       class="ma-1"
-                      v-on:click="lanzarEditable(item)"
+                      v-on:click="openUpdateEmployeeDialog(item)"
                       white
                       icon
                       color="primary"
@@ -156,7 +192,7 @@
                         class="hgcursor"
                         align-self="center"
                         size="200"
-                        v-on:click="moreinformation(item)"
+                        v-on:click="getEmployeeInformation(item)"
                       >
                         <div
                           style="
@@ -186,7 +222,7 @@
               </v-col>
             </v-row>
           </template>
-        </v-data-iterator>
+        </v-data-iterator> -->
       </v-container>
       <v-dialog v-model="loadingDialog" hide-overlay persistent width="300">
         <v-card color="primary" dark>
@@ -315,15 +351,6 @@
           <v-btn
             depressed
             class="l-14"
-            v-on:click="eliminarEmpleado()"
-            color="error"
-          >
-            Eliminar
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            depressed
-            class="l-14"
             v-on:click="actualizarEmpleado()"
             color="primary"
           >
@@ -353,11 +380,11 @@
           </p>
           <p>
             <v-switch
-              v-model="activo_inactivo"
+              v-model="activeInactive"
               label="Activo"
               color="success"
               hide-details
-              @click="cambiarEstado"
+              @click="changeStatusEmployee"
             >
             </v-switch>
           </p>
@@ -378,6 +405,14 @@ export default {
   name: "Employee",
 
   data: () => ({
+    headers: [
+      { text: "Nombre", value: "e_name" },
+      { text: "Teléfono", value: "e_phone" },
+      { text: "Correo Electrónico", value: "e_email" },
+      { text: "Estado", value: "e_status" },
+      { text: "Acciones", value: "actions" },
+    ],
+
     employees: [],
     newEmployee: {
       e_name: "",
@@ -402,7 +437,7 @@ export default {
     },
     loadingDialog: false,
     employeeDialog: false,
-    activo_inactivo: true,
+    activeInactive: true,
     updateDialog: false,
     updateStatusSwitch: true,
     employeeFilter: "Todos",
@@ -410,13 +445,14 @@ export default {
   }),
 
   created() {
-    this.getMeseros();
+    this.getAllEmployees();
   },
   methods: {
     cambio(event) {
-      this.getMeseros();
+      this.getAllEmployees();
     },
-    moreinformation(empleado) {
+
+    getEmployeeInformation(empleado) {
       this.selectedEmployee.e_name = empleado.e_name;
       this.selectedEmployee.e_password = empleado.e_password;
       this.selectedEmployee.e_email = empleado.e_email;
@@ -425,13 +461,14 @@ export default {
       this.selectedEmployee.e_admin = empleado.e_admin;
       this.selectedEmployee.id_employee = empleado.id_employee;
       if (this.selectedEmployee.e_status == "a") {
-        this.activo_inactivo = true;
+        this.activeInactive = true;
       } else {
-        this.activo_inactivo = false;
+        this.activeInactive = false;
       }
       this.employeeDialog = true;
     },
-    limpiarEmpeladoSe() {
+
+    clearEmployee() {
       this.selectedEmployee.e_name = "";
       this.selectedEmployee.e_password = "";
       this.selectedEmployee.e_email = "";
@@ -440,20 +477,22 @@ export default {
       this.selectedEmployee.e_admin = "";
       this.selectedEmployee.id_employee = "";
     },
-    async cambiarEstado() {
+
+    async changeStatusEmployee() {
       let status = "";
 
       this.selectedEmployee.e_status == "a" ? (status = "i") : (status = "a");
 
-      await this.axios.put("/employee/setStatusEmployee", {
+      await this.axios.put("employee/setStatusEmployee", {
         id_employee: this.selectedEmployee.id_employee,
         e_status: status,
       });
 
-      this.getMeseros();
+      this.getAllEmployees();
       this.employeeDialog = false;
     },
-    lanzarEditable(empleado) {
+
+    openUpdateEmployeeDialog(empleado) {
       this.updatingEmployee.e_name = empleado.e_name;
       this.updatingEmployee.e_password = empleado.e_password;
       this.updatingEmployee.e_email = empleado.e_email;
@@ -468,6 +507,7 @@ export default {
 
       this.updateDialog = true;
     },
+
     async actualizarEmpleado() {
       this.loadingDialog = true;
 
@@ -475,7 +515,7 @@ export default {
         ? (this.updatingEmployee.e_status = "a")
         : (this.updatingEmployee.e_status = "i");
 
-      await this.axios.put("/employee/updateEmployee", {
+      await this.axios.put("employee/updateEmployee", {
         e_name: this.updatingEmployee.e_name,
         e_phone: this.updatingEmployee.e_phone,
         e_email: this.updatingEmployee.e_email,
@@ -485,42 +525,41 @@ export default {
         id_employee: this.updatingEmployee.id_employee,
       });
 
-      this.getMeseros();
+      this.getAllEmployees();
       this.loadingDialog = false;
       this.updateDialog = false;
     },
 
-    async eliminarEmpleado() {
+    async deleteEmployee(employee) {
       this.loadingDialog = true;
 
-      await this.axios.post("/employee/deleteEmployee", {
-        id_employee: this.updatingEmployee.id_employee,
+      await this.axios.post("employee/deleteEmployee", {
+        id_employee: employee.id_employee,
       });
 
-      this.getMeseros();
+      this.getAllEmployees();
       this.loadingDialog = false;
-      this.updateDialog = false;
     },
 
-    async getMeseros() {
+    async getAllEmployees() {
       let apiData;
 
       if (this.employeeFilter == "Todos") {
-        apiData = await this.axios.get("/employee/allEmployees");
+        apiData = await this.axios.get("employee/allEmployees");
         this.employees = apiData.data;
       } else if (this.employeeFilter == "Activos") {
-        apiData = await this.axios.get("/employee/activeEmployees");
+        apiData = await this.axios.get("employee/activeEmployees");
         this.employees = apiData.data;
       } else {
-        apiData = await this.axios.get("/employee/inactiveEmployees");
+        apiData = await this.axios.get("employee/inactiveEmployees");
         this.employees = apiData.data;
       }
     },
 
-    async submit() {
+    async submitForm() {
       this.loadingDialog = true;
 
-      await this.axios.post("/employee/addEmployee", {
+      await this.axios.post("employee/addEmployee", {
         e_name: this.newEmployee.e_name,
         e_phone: this.newEmployee.e_phone,
         e_email: this.newEmployee.e_email,
@@ -534,8 +573,16 @@ export default {
       this.newEmployee.e_password = "";
       this.newEmployee.e_admin = false;
 
-      this.getMeseros();
+      this.getAllEmployees();
       this.loadingDialog = false;
+    },
+
+    getStatusText(employee) {
+      return employee.e_status == "a" ? "Activo" : "Inactivo";
+    },
+
+    getStatusColor(employee) {
+      return employee.e_status == "a" ? "green" : "yellow";
     },
   },
   components: {},
