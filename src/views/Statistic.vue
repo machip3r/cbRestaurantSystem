@@ -165,7 +165,7 @@
             </v-row>
           </v-alert>
         </div>
-        <div class="block container-orders-table">
+        <div class="block container-orders-employee">
           <v-container>
             <v-row>
               <v-col>
@@ -264,7 +264,7 @@
             </v-row>
           </v-alert>
         </div>
-        <div class="block container-orders-employee">
+        <div class="block container-orders-table">
           <v-container>
             <v-row>
               <v-col>
@@ -706,6 +706,8 @@ export default {
 
     async getTables() {
       const apiData = await this.axios.get("statistic/allTables/");
+
+      apiData.data.forEach((table) => console.log(table));
 
       apiData.data.forEach((table) =>
         this.tables.push({
