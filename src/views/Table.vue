@@ -1,418 +1,29 @@
 <template>
   <v-container>
     <h1>Mesas</h1>
-    <!-- <v-container>
-      <v-spacer></v-spacer>
-      <v-row>
-        <v-col cols="4">
-          <v-btn
-            class="mx-15 ma-3"
-            fab
-            color="primary"
-            height="100%"
-            width="75%"
-            :disabled="viewActivityTables(1, this.activeTables)"
-            @click="
-              (suborderDialog = true),
-                (actualTable = 1),
-                (actuaIDOrder = orden_correct[0]['value']),
-                getSuborders(1, orden_correct[0]['value']),
-                (newSuborder.id_order = orden_correct[0]['value'])
-            "
-          >
-            Mesa 1 <br />
-            {{
-              typeof this.spaces[0] !== "undefined"
-                ? this.spaces[0]["value"]
-                : "0"
-            }}/8
-          </v-btn>
-        </v-col>
-        <v-col cols="4">
-          <v-row>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="75%"
-                :disabled="viewActivityTables(2, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '2'),
-                    (actuaIDOrder = orden_correct[1]['value']),
-                    getSuborders(2, orden_correct[1]['value']),
-                    (newSuborder.id_order = orden_correct[1]['value'])
-                "
-              >
-                Mesa 2 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[1]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="75%"
-                :disabled="viewActivityTables(3, this.activeTables)"
-                @click="
-                  actualTable = '3';
-
-                  (actuaIDOrder = orden_correct[2]['value']),
-                    getSuborders(3, orden_correct[2]['value']),
-                    (suborderDialog = true),
-                    (newSuborder.id_order = orden_correct[2]['value']);
-                "
-              >
-                Mesa 3 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[2]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="75%"
-                :disabled="viewActivityTables(4, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '4'),
-                    (actuaIDOrder = orden_correct[3]['value']),
-                    getSuborders(4, orden_correct[3]['value']),
-                    (newSuborder.id_order = orden_correct[3]['value'])
-                "
-              >
-                Mesa 4 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[3]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="75%"
-                :disabled="viewActivityTables(5, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '5'),
-                    (actuaIDOrder = orden_correct[4]['value']),
-                    getSuborders(5, orden_correct[4]['value']),
-                    (newSuborder.id_order = orden_correct[4]['value'])
-                "
-              >
-                Mesa 5 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[4]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col cols="4">
-          <v-btn
-            class="mx-15"
-            fab
-            color="primary"
-            height="100%"
-            width="75%"
-            :disabled="viewActivityTables(6, this.activeTables)"
-            @click="
-              (suborderDialog = true), (actualTable = '6');
-
-              (actuaIDOrder = orden_correct[5]['value']),
-                getSuborders(6, orden_correct[5]['value']),
-                (newSuborder.id_order = orden_correct[5]['value']);
-            "
-          >
-            Mesa 6 <br />
-            {{
-              typeof this.spaces[0] !== "undefined"
-                ? this.spaces[5]["value"]
-                : "0"
-            }}/8
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-row max-height="50%">
-        <v-col cols="4">
-          <v-row>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="200px"
-                :disabled="viewActivityTables(7, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '7'),
-                    (actuaIDOrder = orden_correct[6]['value']),
-                    getSuborders(7, orden_correct[6]['value']),
-                    (newSuborder.id_order = orden_correct[6]['value'])
-                "
-              >
-                Mesa 7 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[6]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="200px"
-                :disabled="viewActivityTables(8, this.activeTables)"
-                @click="
-                  actualTable = '8';
-
-                  (actuaIDOrder = orden_correct[7]['value']),
-                    getSuborders(8, orden_correct[7]['value']),
-                    (newSuborder.id_order = orden_correct[7]['value']);
-                "
-              >
-                Mesa 8 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[7]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="200px"
-                :disabled="viewActivityTables(9, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '9'),
-                    (actuaIDOrder = orden_correct[8]['value']),
-                    getSuborders(9, orden_correct[8]['value']),
-                    (newSuborder.id_order = orden_correct[8]['value'])
-                "
-              >
-                Mesa 9 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[8]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="200px"
-                :disabled="viewActivityTables(10, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '10'),
-                    (actuaIDOrder = orden_correct[9]['value']),
-                    getSuborders(10, orden_correct[9]['value']),
-                    (newSuborder.id_order = orden_correct[9]['value'])
-                "
-              >
-                Mesa 10 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[9]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col cols="4">
-          <v-btn
-            class="mx-15"
-            fab
-            color="primary"
-            height="100%"
-            width="75%"
-            :disabled="viewActivityTables(11, this.activeTables)"
-            @click="
-              (suborderDialog = true), (actualTable = '11');
-              (actuaIDOrder = orden_correct[10]['value']),
-                getSuborders(11, orden_correct[10]['value']),
-                (newSuborder.id_order = orden_correct[10]['value']);
-            "
-          >
-            Mesa 11 <br />
-            {{
-              typeof this.spaces[0] !== "undefined"
-                ? this.spaces[10]["value"]
-                : "0"
-            }}/8
-          </v-btn>
-        </v-col>
-
-        <v-col cols="4">
-          <v-row>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="200px"
-                :disabled="viewActivityTables(12, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '12'),
-                    (actuaIDOrder = orden_correct[11]['value']),
-                    getSuborders(12, orden_correct[11]['value']),
-                    (newSuborder.id_order = orden_correct[11]['value'])
-                "
-              >
-                Mesa 12 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[11]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="200px"
-                :disabled="viewActivityTables(13, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '13'),
-                    (actuaIDOrder = orden_correct[12]['value']),
-                    getSuborders(13, orden_correct[12]['value']),
-                    (newSuborder.id_order = orden_correct[12]['value'])
-                "
-              >
-                Mesa 13 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[12]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="200px"
-                :disabled="viewActivityTables(14, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '14'),
-                    (actuaIDOrder = orden_correct[13]['value']),
-                    getSuborders(14, orden_correct[13]['value']),
-                    (newSuborder.id_order = orden_correct[13]['value'])
-                "
-              >
-                Mesa 14 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[13]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-            <v-col cols="6">
-              <v-btn
-                class="mx-3"
-                fab
-                color="primary"
-                height="200px"
-                width="200px"
-                :disabled="viewActivityTables(15, this.activeTables)"
-                @click="
-                  (suborderDialog = true),
-                    (actualTable = '15'),
-                    (actuaIDOrder = orden_correct[14]['value']),
-                    getSuborders(15, orden_correct[14]['value']),
-                    (newSuborder.id_order = orden_correct[14]['value'])
-                "
-              >
-                Mesa 15 <br />
-                {{
-                  typeof this.spaces[0] !== "undefined"
-                    ? this.spaces[14]["value"]
-                    : "0"
-                }}/4
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
-    </v-container> -->
-
+    <br />
     <v-card color="grey lighten-4">
-      <v-toolbar dark flat dense color="primary">
+      <v-toolbar flat dense color="primary">
         <v-toolbar-title>Agregar mesa</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-toolbar>
       <v-card-text class="container-inside">
         <template>
           <v-row justify="center" align="center" align-content="center">
-            <v-col cols="10">
+            <v-col cols="9">
               <v-text-field
-                class="mt-5"
+                class="my-2"
                 v-model="newTable.b_tag"
-                background-color="white"
+                background-color="greyCustom"
                 label="Nombre o etiqueta de la mesa"
                 flat
                 solo
+                hide-details
                 required
               ></v-text-field>
             </v-col>
             <v-col cols="2">
               <v-btn
-                class="mb-2"
                 :loading="loadingAddTable"
                 :disabled="loadingAddTable"
                 color="accent"
@@ -452,14 +63,6 @@
     <v-container>
       <v-row>
         <v-col>
-          <!-- <v-data-table
-            :headers="headers"
-            :items="tables"
-            :sort-by="['calories', 'fat']"
-            :sort-desc="[false, true]"
-            multi-sort
-            class="elevation-1"
-          ></v-data-table> -->
           <v-data-table
             :headers="headersTables"
             :items="tables"
@@ -467,20 +70,41 @@
             class="elevation-1"
           >
             <template v-slot:[`item.b_disponibility`]="{ item }">
-              <v-chip :color="getDisponibilityColor(item)">
+              <v-chip
+                :text-color="
+                  getDisponibilityColor(item) != 'success' ? 'black' : 'white'
+                "
+                :color="getDisponibilityColor(item)"
+              >
                 {{ getDisponibilityText(item) }}
               </v-chip>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
-              <v-icon
+              <v-chip
+                class="mr-2"
+                color="info"
+                text-color="black"
                 v-if="item.b_disponibility != 'a'"
                 @click="openSuborderDialog(item)"
-                small
               >
-                fas fa-eye
-              </v-icon>
-              <v-icon @click="updateTable(item)" small> fas fa-pen </v-icon>
-              <v-icon @click="deleteTable(item)" small> fas fa-trash </v-icon>
+                <v-icon class="mr-2" small> fas fa-eye </v-icon>
+                Ver
+              </v-chip>
+              <v-chip
+                class="mr-2"
+                color="warning"
+                text-color="black"
+                @click="openUpdateTableDialog(item)"
+              >
+                <v-icon small> fas fa-pen </v-icon>
+              </v-chip>
+              <v-chip
+                class="mr-2"
+                color="error"
+                @click="openDeleteTableDialog(item)"
+              >
+                <v-icon small> fas fa-trash </v-icon>
+              </v-chip>
             </template>
           </v-data-table>
         </v-col>
@@ -493,7 +117,7 @@
       max-width="1000"
     >
       <v-card>
-        <v-toolbar dark class="toolbar-title" color="primary">
+        <v-toolbar class="toolbar-title" color="primary">
           <v-toolbar-title> Mesa {{ this.actualTag }} </v-toolbar-title>
         </v-toolbar>
         <v-data-table
@@ -502,7 +126,9 @@
           :items="suborders"
         >
           <template v-slot:[`item.actions`]="{ item }">
-            <v-icon @click="deleteSuborder(item)" small> fas fa-trash </v-icon>
+            <v-icon @click="openDeleteSuborderDialog(item)" small>
+              fas fa-trash
+            </v-icon>
           </template>
         </v-data-table>
         <v-card-actions>
@@ -510,7 +136,7 @@
           <v-btn color="primary darken-1" text @click="closeSubordersDialog()">
             Cerrar
           </v-btn>
-          <v-btn color="green darken-1" text @click="openNewSuborderDialog()">
+          <v-btn color="green darken-1" text @click="openAddSuborderDialog()">
             Agregar Suborden
           </v-btn>
         </v-card-actions>
@@ -519,47 +145,151 @@
 
     <v-dialog
       class="toolbar-subtitle"
-      v-model="newSuborderDialog"
+      v-model="addSuborderDialog"
       max-width="500"
     >
       <v-card>
-        <v-toolbar dark class="toolbar-title" color="primary">
+        <v-toolbar class="toolbar-title" color="primary">
           <v-toolbar-title> Nuevo pedido </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <v-container>
             <v-row>
               <v-col>
-                <v-text-field v-model="newSuborder.s_tag" label="Etiqueta">
-                </v-text-field>
+                <v-text-field
+                  class="mt-2"
+                  v-model="newSuborder.s_tag"
+                  background-color="greyCustom"
+                  label="Etiqueta"
+                  flat
+                  solo
+                  hide-details
+                  required
+                ></v-text-field>
               </v-col>
               <v-col>
                 <v-select
+                  class="mt-2"
+                  flat
+                  solo-inverted
+                  hide-details
                   :items="products"
-                  label="Producto"
                   v-model="newSuborder.id_product"
+                  label="Producto"
                 >
                 </v-select>
               </v-col>
               <v-col>
                 <v-text-field
+                  class="mt-2"
                   v-model="newSuborder.s_cuantity"
+                  background-color="greyCustom"
                   label="Cantidad"
-                  type="Number"
+                  type="number"
                   min="1"
-                >
-                </v-text-field>
+                  flat
+                  solo
+                  hide-details
+                  required
+                ></v-text-field>
               </v-col>
             </v-row>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary darken-1" text @click="cancelarAddSub()">
+          <v-btn
+            color="primary darken-1"
+            text
+            @click="closeAddSuborderDialog()"
+          >
             Cancelar
           </v-btn>
           <v-btn color="green darken-1" text @click="addSuborder()">
             Agregar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      class="toolbar-subtitle"
+      v-model="updateTableDialog"
+      max-width="500"
+    >
+      <v-card>
+        <v-toolbar class="toolbar-title" color="primary">
+          <v-toolbar-title> Editar mesa </v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  class="my-2"
+                  v-model="actualTable.b_tag"
+                  background-color="greyCustom"
+                  label="Nombre o etiqueta de la mesa"
+                  flat
+                  solo
+                  hide-details
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary darken-1"
+            text
+            @click="closeUpdateTableDialog()"
+          >
+            Cancelar
+          </v-btn>
+          <v-btn color="accent darken-1" text @click="updateTable()">
+            Editar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="deleteTableDialog" max-width="300">
+      <v-card>
+        <v-card-title class="text-h5"> ¿Estás seguro? </v-card-title>
+        <v-card-text> Esta acción es irreversible. </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary darken-1"
+            text
+            @click="closeDeleteTableDialog()"
+          >
+            Cancelar
+          </v-btn>
+          <v-btn color="error darken-1" text @click="deleteTable()">
+            Eliminar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="deleteSuborderDialog" max-width="300">
+      <v-card>
+        <v-card-title class="text-h5"> ¿Estás seguro? </v-card-title>
+        <v-card-text> Esta acción es irreversible. </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary darken-1"
+            text
+            @click="closeDeleteSuborderDialog()"
+          >
+            Cancelar
+          </v-btn>
+          <v-btn color="error darken-1" text @click="deleteSuborder()">
+            Eliminar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -579,8 +309,18 @@ export default {
     return {
       headersTables: [
         { text: "Etiqueta", value: "b_tag", class: "primary" },
-        { text: "Estado", value: "b_disponibility", class: "primary" },
-        { text: "Acciones", value: "actions", class: "primary" },
+        {
+          text: "Estado",
+          value: "b_disponibility",
+          class: "primary",
+          align: "center",
+        },
+        {
+          text: "Acciones",
+          value: "actions",
+          class: "primary",
+          align: "end",
+        },
       ],
       headersTable: [
         { text: "Etiqueta", value: "s_tag" },
@@ -589,20 +329,21 @@ export default {
         { text: "Costo", value: "s_price" },
         { text: "Acciones", value: "actions" },
       ],
-      posicion: "0",
+      newTable: {
+        b_tag: "",
+      },
       newSuborder: {
         id_order: "",
         id_product: "",
         s_tag: "",
         s_cuantity: "",
       },
-      newTable: {
-        b_tag: "",
-      },
 
-      actualTable: "",
+      actualIDTable: 0,
       actualTag: "",
+      actualTable: {},
       actuaIDOrder: 0,
+      actualIDSuborder: 0,
 
       tables: [],
       activeTables: [],
@@ -612,16 +353,18 @@ export default {
       orden_correct: [],
 
       suborderDialog: false,
-      newSuborderDialog: false,
+      addSuborderDialog: false,
       loader: null,
       loadingAddTable: false,
       alertNewTable: false,
       alertEmptyNewTable: false,
+      updateTableDialog: false,
+      deleteTableDialog: false,
+      deleteSuborderDialog: false,
     };
   },
 
   created() {
-    /* this.getSpacesTables(); */
     this.getTables();
     this.getActiveTables();
     this.getAllProducts();
@@ -629,13 +372,26 @@ export default {
   },
 
   watch: {
+    updateTableDialog(isOpen) {
+      if (!isOpen) this.closeUpdateTableDialog();
+    },
+
+    deleteTableDialog(isOpen) {
+      if (!isOpen) this.closeDeleteTableDialog();
+    },
+
+    deleteSuborderDialog(isOpen) {
+      if (!isOpen) this.closeDeleteSuborderDialog();
+    },
+
     suborderDialog(isOpen) {
       if (!isOpen) this.closeSubordersDialog();
     },
 
-    newSuborderDialog(isOpen) {
-      if (!isOpen) this.cancelarAddSub();
+    addSuborderDialog(isOpen) {
+      if (!isOpen) this.closeAddSuborderDialog();
     },
+
     alertNewTable(value) {
       if (!value) return;
 
@@ -667,32 +423,24 @@ export default {
       this.loadingAddTable = false;
     },
 
-    async updateTable(table) {
-      // open dialog
-      /* this.updatingEmployee.e_name = empleado.e_name;
-      this.updatingEmployee.e_password = empleado.e_password;
-      this.updatingEmployee.e_email = empleado.e_email;
-      this.updatingEmployee.e_status = empleado.e_status;
-      this.updatingEmployee.e_phone = empleado.e_phone;
-      this.updatingEmployee.e_admin = empleado.e_admin;
-      this.updatingEmployee.id_employee = empleado.id_employee;
+    async updateTable() {
+      await this.axios.post("table/updateTable", this.actualTable);
 
-      this.updatingEmployee.e_status == "a"
-        ? (this.updateStatusSwitch = true)
-        : (this.updateStatusSwitch = false);
-
-      this.updateDialog = true; */
+      this.closeUpdateTableDialog();
+      this.getTables();
+      this.getActiveTables();
     },
 
-    async deleteTable(table) {
-      // dialog de confirmación
-      /* this.updatingEmployee.id_employee = empleado.id_employee;
+    async deleteTable() {
+      const body = {
+        id_board: this.actualIDTable,
+      };
 
-      this.updatingEmployee.e_status == "a"
-        ? (this.updateStatusSwitch = true)
-        : (this.updateStatusSwitch = false);
+      await this.axios.post("table/deleteTable", body);
 
-      this.updateDialog = true; */
+      this.closeDeleteTableDialog();
+      this.getTables();
+      this.getActiveTables();
     },
 
     async getTables() {
@@ -712,24 +460,10 @@ export default {
       );
     },
 
-    /* async getSpacesTables() {
-      this.spaces = [];
-      const apiData = await this.axios.get("table/filledSpacesTables/");
-
-      apiData.data.forEach((space) =>
-        this.spaces.push({
-          text: space.id_board,
-          value: space.cupo,
-        })
-      );
-    }, */
-
     async getSuborders(id_board, id_order) {
       const apiData = await this.axios.get(
         "table/allSuborders/" + id_board.toString() + "/" + id_order.toString()
       );
-
-      /* this.getSpacesTables(); */
 
       this.suborders = apiData.data;
       this.suborderDialog = true;
@@ -747,74 +481,31 @@ export default {
       this.actualTag = apiData.data[0]["b_tag"];
     },
 
-    /* viewActivityTables(i, t) {
-      for (let step = 0; step < t.length; step++) {
-        if (i == t[step]["value"]) {
-          return false;
-        }
-      }
-      return true;
-    }, */
-
     async getAllProducts() {
       const apiData = await this.axios.get("product/allProducts");
 
       apiData.data.forEach((product) => {
-        if (product.p_status == "a") {
+        if (product.p_status == "a")
           this.products.push({
             text: product.p_name,
             value: product.id_product,
           });
-        }
       });
     },
 
     async addSuborder() {
       await this.axios.post("table/addSuborder/", this.newSuborder);
 
-      this.getSuborders(this.actualTable, this.actuaIDOrder);
-      /* this.getSpacesTables(); */
+      this.getSuborders(this.actualIDTable, this.actuaIDOrder);
+
       this.newSuborder = {
         id_order: "",
         id_product: "",
         s_tag: "",
         s_cuantity: "",
       };
-      this.newSuborderDialog = false;
-    },
 
-    async openSuborderDialog(table) {
-      let id_order = await this.getTableOrder(table.id_board);
-      this.actuaIDOrder = id_order;
-
-      this.getTableTag(table.id_board);
-      this.getSuborders(table.id_board, id_order);
-
-      this.suborderDialog = true;
-      this.actualTable = table.id_board;
-      this.newSuborder.id_order = this.actuaIDOrder;
-    },
-
-    openNewSuborderDialog() {
-      this.newSuborderDialog = true;
-    },
-
-    cancelarAddSub() {
-      this.newSuborderDialog = false;
-      /* this.getSpacesTables(); */
-    },
-
-    closeSubordersDialog() {
-      this.newSuborder = {
-        id_order: "",
-        id_product: "",
-        s_tag: "",
-        s_cuantity: "",
-      };
-      this.suborderDialog = false;
-      this.actualTable = "";
-      this.actuaIDOrder = "";
-      /* this.getSpacesTables(); */
+      this.addSuborderDialog = false;
     },
 
     async getTableOrders() {
@@ -828,13 +519,15 @@ export default {
       );
     },
 
-    async deleteSuborder(item) {
+    async deleteSuborder() {
       const data = {
-        id_suborder: item.id_suborder,
+        id_suborder: this.actualIDSuborder,
       };
+
       await this.axios.post("table/deleteSuborder", data);
-      this.getSuborders(this.actualTable, this.actuaIDOrder);
-      /* this.getSpacesTables(); */
+
+      this.closeDeleteSuborderDialog();
+      this.getSuborders(this.actualIDTable, this.actuaIDOrder);
     },
 
     getDisponibilityText(table) {
@@ -842,7 +535,74 @@ export default {
     },
 
     getDisponibilityColor(table) {
-      return table.b_disponibility != "a" ? "yellow" : "green";
+      return table.b_disponibility != "a" ? "warning" : "success";
+    },
+
+    openUpdateTableDialog(table) {
+      this.actualTable = {
+        id_board: table.id_board,
+        b_tag: table.b_tag,
+      };
+
+      this.updateTableDialog = true;
+    },
+
+    closeUpdateTableDialog() {
+      this.actualTable = {};
+      this.updateTableDialog = false;
+    },
+
+    openDeleteTableDialog(table) {
+      this.actualIDTable = table.id_board;
+      this.deleteTableDialog = true;
+    },
+
+    closeDeleteTableDialog() {
+      this.actualIDTable = 0;
+      this.deleteTableDialog = false;
+    },
+
+    openDeleteSuborderDialog(suborder) {
+      this.actualIDSuborder = suborder.id_suborder;
+      this.deleteSuborderDialog = true;
+    },
+
+    closeDeleteSuborderDialog() {
+      this.actualIDSuborder = 0;
+      this.deleteSuborderDialog = false;
+    },
+
+    async openSuborderDialog(table) {
+      let id_order = await this.getTableOrder(table.id_board);
+      this.actuaIDOrder = id_order;
+
+      this.getTableTag(table.id_board);
+      this.getSuborders(table.id_board, id_order);
+
+      this.suborderDialog = true;
+      this.actualIDTable = table.id_board;
+      this.newSuborder.id_order = this.actuaIDOrder;
+    },
+
+    closeSubordersDialog() {
+      this.newSuborder = {
+        id_order: "",
+        id_product: "",
+        s_tag: "",
+        s_cuantity: "",
+      };
+
+      this.suborderDialog = false;
+      this.actualIDTable = 0;
+      this.actuaIDOrder = 0;
+    },
+
+    openAddSuborderDialog() {
+      this.addSuborderDialog = true;
+    },
+
+    closeAddSuborderDialog() {
+      this.addSuborderDialog = false;
     },
   },
 

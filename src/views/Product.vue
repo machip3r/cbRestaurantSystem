@@ -1,10 +1,10 @@
 <template>
   <v-container class="container-inside">
     <h1 class="toolbar-title">Productos</h1>
-
+    <br />
     <template>
       <v-card color="grey lighten-4">
-        <v-toolbar dense color="primary" dark>
+        <v-toolbar dense color="primary">
           <v-toolbar-title class="toolbar-title">
             Agregar producto
           </v-toolbar-title>
@@ -202,7 +202,7 @@
                 <v-icon small @click="editProduct(item)"> fas fa-pen </v-icon>
               </v-col>
               <v-col cols="2" class="mx-0 my-n5">
-                <v-icon small @click="openDeleteDialog(item)">
+                <v-icon small @click="openDeleteProductDialog(item)">
                   fas fa-trash
                 </v-icon>
               </v-col>
@@ -222,16 +222,20 @@
       </v-card>
     </template>
 
-    <v-dialog v-model="deleteDialog" max-width="300">
+    <v-dialog v-model="deleteProductDialog" max-width="300">
       <v-card>
         <v-card-title class="text-h5"> ¿Estás seguro? </v-card-title>
         <v-card-text> Esta acción es irreversible. </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary darken-1" text @click="closeDeleteDialog()">
+          <v-btn
+            color="primary darken-1"
+            text
+            @click="closeDeleteProductDialog()"
+          >
             Cancelar
           </v-btn>
-          <v-btn color="red darken-1" text @click="deleteProduct()">
+          <v-btn color="error darken-1" text @click="deleteProduct()">
             Eliminar
           </v-btn>
         </v-card-actions>
@@ -248,7 +252,7 @@ export default {
     valid: false,
     dialog: false,
     updateMode: false,
-    deleteDialog: false,
+    deleteProductDialog: false,
     actualProduct: {},
     priceRules: [
       (v) =>
@@ -303,7 +307,7 @@ export default {
         id_product: this.actualProduct.id_product,
       };
       await this.axios.post("product/deleteProduct", body);
-      this.deleteDialog = false;
+      this.closeDeleteProductDialog();
       this.getAllProducts();
     },
 
@@ -348,14 +352,14 @@ export default {
         this.updateMode ? this.updateProduct() : this.addProduct();
     },
 
-    openDeleteDialog(item) {
+    openDeleteProductDialog(item) {
       this.actualProduct = item;
-      this.deleteDialog = true;
+      this.deleteProductDialog = true;
     },
 
-    closeDeleteDialog() {
-      this.deleteDialog = false;
-      this.actualProduct = false;
+    closeDeleteProductDialog() {
+      this.actualProduct = {};
+      this.deleteProductDialog = false;
     },
   },
   computed: {
