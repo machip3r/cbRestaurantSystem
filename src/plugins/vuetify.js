@@ -17,15 +17,20 @@ export default new Vuetify({
         third: "#FBFAF1",
         accent: "#FECD48", */
 
-        primary: "#F7A538",
-        secondary: "#FCC07E",
-        third: "#FCF1D8",
-        accent: "#293858",
+        primary: "#FFAF50",
+        secondary: "#FBC63D",
+        third: "#FCF5DE",
+        accent: "#F4690B",
+
+        greyCustom: "#E7E7E7",
 
         error: "#FF5252",
         info: "#6FB5D1",
+        /* info: "#FBC63D", */
         success: "#4CAF50",
-        warning: "#FFC107",
+        success: "#F4690B",
+        /* warning: "#FFC107", */
+        warning: "#FBC63D",
       },
     },
   },
