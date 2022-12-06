@@ -1,9 +1,10 @@
 <template>
   <v-container class="container-inside">
     <h1 class="toolbar-title">Empleados</h1>
+    <br />
     <template>
       <v-card color="grey lighten-4">
-        <v-toolbar dense color="primary" dark>
+        <v-toolbar dense color="primary">
           <v-toolbar-title class="toolbar-title">
             Agregar empleado
           </v-toolbar-title>
@@ -240,7 +241,7 @@
 
     <v-dialog v-model="updateDialog" max-width="800">
       <v-card>
-        <v-toolbar dark class="mb-2 text-h5" color="primary">
+        <v-toolbar class="mb-2 text-h5" color="primary">
           <v-toolbar-title>Editar empleado</v-toolbar-title>
         </v-toolbar>
         <v-card-text>
@@ -361,7 +362,7 @@
     </v-dialog>
     <v-dialog v-model="employeeDialog" max-width="300" max-height="300">
       <v-card align="center" align-content="center" justify="center">
-        <v-toolbar dark class="mb-2 text-h5" color="primary">
+        <v-toolbar class="mb-2 text-h5" color="primary">
           <v-toolbar-title>{{ selectedEmployee.e_name }}</v-toolbar-title>
         </v-toolbar>
 

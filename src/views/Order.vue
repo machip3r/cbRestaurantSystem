@@ -4,7 +4,7 @@
     <br />
     <template>
       <v-card color="grey lighten-4">
-        <v-toolbar dark flat dense color="primary">
+        <v-toolbar flat dense color="primary">
           <v-toolbar-title>Agregar orden</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
@@ -76,7 +76,7 @@
     <template>
       <v-data-iterator :items="activeOrders" hide-default-footer>
         <template v-slot:header>
-          <v-toolbar dark class="mb-2" color="primary">
+          <v-toolbar class="mb-2" color="primary">
             <v-toolbar-title>Órdenes activas</v-toolbar-title>
           </v-toolbar>
         </template>
@@ -92,17 +92,15 @@
             >
               <v-card dense color="primary">
                 <v-card-title class="subheading font-weight-bold">
-                  <v-toolbar dark flat color="primary">
-                    <v-toolbar-title>
-                      "{{ order.b_tag }}"
-                    </v-toolbar-title>
+                  <v-toolbar flat color="primary">
+                    <v-toolbar-title> "{{ order.b_tag }}" </v-toolbar-title>
                   </v-toolbar>
                   <v-spacer></v-spacer>
-                  <v-btn icon color="white" @click="openSubOrderDialog(order)">
+                  <v-btn icon @click="openSubOrderDialog(order)">
                     <v-icon>fas fa-eye</v-icon>
                   </v-btn>
 
-                  <v-btn icon color="white" @click="openPaymentDialog(order)">
+                  <v-btn icon @click="openPaymentDialog(order)">
                     <v-icon size="21">fas fa-money-bill-alt</v-icon>
                   </v-btn>
                 </v-card-title>
@@ -158,15 +156,13 @@
               <v-card dense color="secondary">
                 <v-card-title class="subheading font-weight-bold">
                   <v-toolbar flat color="secondary">
-                    <v-toolbar-title>
-                      "{{ order.b_tag }}"
-                    </v-toolbar-title>
+                    <v-toolbar-title> "{{ order.b_tag }}" </v-toolbar-title>
                   </v-toolbar>
                   <v-spacer></v-spacer>
-                  <v-btn icon color="black" @click="openSubOrderDialog(order)">
+                  <v-btn icon @click="openSubOrderDialog(order)">
                     <v-icon>fas fa-eye</v-icon>
                   </v-btn>
-                  <v-btn icon color="black" @click="openCDeleteDialog(order)">
+                  <v-btn icon @click="openCDeleteDialog(order)">
                     <v-icon size="21">fas fa-trash</v-icon>
                   </v-btn>
                 </v-card-title>
@@ -219,7 +215,7 @@
         max-width="1000"
       >
         <v-card>
-          <v-toolbar dark class="toolbar-title" color="primary">
+          <v-toolbar class="toolbar-title" color="primary">
             <v-toolbar-title> Mesa "{{ this.order.b_tag }}" </v-toolbar-title>
           </v-toolbar>
           <v-data-table
@@ -245,7 +241,7 @@
             <v-btn
               color="green darken-1"
               text
-              @click="newSuborderDialog = true"
+              @click="addSuborderDialog = true"
             >
               Agregar Suborden
             </v-btn>
@@ -255,43 +251,64 @@
 
       <v-dialog
         class="toolbar-subtitle"
-        v-model="newSuborderDialog"
+        v-model="addSuborderDialog"
         max-width="500"
       >
         <v-card>
-          <v-toolbar dark class="toolbar-title" color="primary">
+          <v-toolbar class="toolbar-title" color="primary">
             <v-toolbar-title> Nuevo pedido </v-toolbar-title>
           </v-toolbar>
           <v-card-text>
             <v-container>
               <v-row>
                 <v-col>
-                  <v-text-field v-model="newSuborder.s_tag" label="Etiqueta">
-                  </v-text-field>
+                  <v-text-field
+                    class="mt-2"
+                    v-model="newSuborder.s_tag"
+                    background-color="greyCustom"
+                    label="Etiqueta"
+                    flat
+                    solo
+                    hide-details
+                    required
+                  ></v-text-field>
                 </v-col>
                 <v-col>
                   <v-select
+                    class="mt-2"
+                    flat
+                    solo-inverted
+                    hide-details
                     :items="products"
-                    label="Producto"
                     v-model="newSuborder.id_product"
+                    label="Producto"
                   >
                   </v-select>
                 </v-col>
                 <v-col>
                   <v-text-field
+                    class="mt-2"
                     v-model="newSuborder.s_cuantity"
+                    background-color="greyCustom"
                     label="Cantidad"
-                    type="Number"
+                    type="number"
                     min="1"
-                  >
-                  </v-text-field>
+                    flat
+                    solo
+                    hide-details
+                    required
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary darken-1" text @click="cancelarAddSub()">
+            <v-btn
+              color="primary darken-1"
+              text
+              @click="closeAddSuborderDialog()"
+            >
               Cancelar
             </v-btn>
             <v-btn color="green darken-1" text @click="addSuborder()">
@@ -309,7 +326,7 @@
         transition="dialog-bottom-transition"
       >
         <v-card class="container-content-payment">
-          <v-toolbar dark color="primary" class="toolbar-title">
+          <v-toolbar color="primary" class="toolbar-title">
             <v-btn icon dark9 @click="pDialog = false">
               <v-icon>fas fa-times</v-icon>
             </v-btn>
@@ -329,7 +346,7 @@
                   class="pa-3"
                   style="background: transparent"
                 >
-                  <v-toolbar dense color="primary" dark>
+                  <v-toolbar dense color="primary">
                     <v-toolbar-title class="toolbar-title">
                       Pedidos de la mesa {{ this.idTable }}
                     </v-toolbar-title>
@@ -376,7 +393,7 @@
                             height="100%"
                             @click="openCPaymentDialog()"
                           >
-                            Pagar e imprimir ticket
+                            Pagar
                           </v-btn>
                         </v-card>
                       </v-col>
@@ -388,7 +405,7 @@
                 <div class="container-ticket" id="ticket">
                   <div class="header-ticket">
                     <v-icon size="40" color="black">fas fa-code</v-icon>
-                    <h2>Food And Code</h2>
+                    <h2>Food and Fun</h2>
                     Accesibilidad, proactividad y alimentación.<br />
                     ------------------------------------------------- <br />
                     Atendido por: {{ this.employeeName }}
@@ -517,7 +534,7 @@ export default {
     subOrdersForDialog: [],
 
     subOrdersDialog: false,
-    newSuborderDialog: false,
+    addSuborderDialog: false,
 
     // PAYMENTS
     headers: [
@@ -573,7 +590,7 @@ export default {
       if (!isOpen) this.closeSubordersDialog();
     },
 
-    newSuborderDialog(isOpen) {
+    addSuborderDialog(isOpen) {
       if (!isOpen) this.cancelarAddSub();
     },
 
@@ -582,6 +599,10 @@ export default {
       if (!isOpen) {
         this.newPayment = {};
         this.subOrders = [];
+        this.getActiveEmployees();
+        this.getActiveTables();
+        this.getActiveOrders();
+        this.getWaitingOrders();
       }
     },
   },
@@ -710,7 +731,7 @@ export default {
     cancelarAddSub() {
       this.getActiveOrders();
       this.getWaitingOrders();
-      this.newSuborderDialog = false;
+      this.addSuborderDialog = false;
     },
 
     closeSubordersDialog() {
@@ -741,7 +762,7 @@ export default {
         s_tag: "",
         s_cuantity: "",
       };
-      this.newSuborderDialog = false;
+      this.addSuborderDialog = false;
     },
 
     async eliminarSuborden(item) {
@@ -797,6 +818,11 @@ export default {
         p_tip: 0,
         p_type: "Efectivo",
       };
+
+      this.getActiveEmployees();
+      this.getActiveTables();
+      this.getActiveOrders();
+      this.getWaitingOrders();
     },
 
     cancelPayment() {
