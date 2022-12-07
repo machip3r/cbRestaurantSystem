@@ -1,115 +1,117 @@
 <template>
-  <v-container>
-    <h1>Mesas</h1>
+  <v-container class="container-inside">
+    <h1 class="toolbar-title">Mesas</h1>
     <br />
-    <v-card color="grey lighten-4">
-      <v-toolbar flat dense color="primary">
-        <v-toolbar-title>Agregar mesa</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-      <v-card-text class="container-inside">
-        <template>
-          <v-row justify="center" align="center" align-content="center">
-            <v-col cols="9">
-              <v-text-field
-                class="my-2"
-                v-model="newTable.b_tag"
-                background-color="greyCustom"
-                label="Nombre o etiqueta de la mesa"
-                flat
-                solo
-                hide-details
-                required
-              ></v-text-field>
-            </v-col>
-            <v-col cols="2">
-              <v-btn
-                :loading="loadingAddTable"
-                :disabled="loadingAddTable"
-                color="accent"
-                @click="addTable()"
-              >
-                Agregar
-                <template v-slot:loader>
-                  <span class="custom-loader">
-                    <v-icon size="18">fas fa-sync-alt</v-icon>
-                  </span>
-                </template>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </template>
-      </v-card-text>
-    </v-card>
-    <v-alert
-      :value="alertNewTable"
-      icon="fas fa-check-circle"
-      transition="scale-transition"
-      class="mt-2"
-      type="success"
-    >
-      Se añadió una nueva mesa.
-    </v-alert>
-    <v-alert
-      :value="alertEmptyNewTable"
-      icon="fas fa-exclamation-circle"
-      transition="scale-transition"
-      class="mt-2"
-      type="error"
-    >
-      Debes de asignar una etiqueta o nombre a la mesa.
-    </v-alert>
-
-    <v-container>
-      <v-row>
-        <v-col>
-          <v-data-table
-            :headers="headersTables"
-            :items="tables"
-            multi-sort
-            class="elevation-1"
+    <template>
+      <v-card color="grey lighten-4">
+        <v-toolbar flat color="primary">
+          <v-toolbar-title class="toolbar-title">
+            Agregar mesa
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-card-text>
+          <template>
+            <v-row justify="center" align="center" align-content="center">
+              <v-col cols="9">
+                <v-text-field
+                  class="my-2"
+                  v-model="newTable.b_tag"
+                  background-color="greyCustom"
+                  label="Nombre o etiqueta de la mesa"
+                  flat
+                  solo
+                  hide-details
+                  required
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2">
+                <v-btn
+                  :loading="loadingAddTable"
+                  :disabled="loadingAddTable"
+                  color="accent"
+                  @click="addTable()"
+                >
+                  Agregar
+                  <template v-slot:loader>
+                    <span class="custom-loader">
+                      <v-icon size="18">fas fa-sync-alt</v-icon>
+                    </span>
+                  </template>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </template>
+          <v-alert
+            :value="alertNewTable"
+            icon="fas fa-check-circle"
+            transition="scale-transition"
+            class="mt-2"
+            type="success"
           >
-            <template v-slot:[`item.b_disponibility`]="{ item }">
-              <v-chip
-                :text-color="
-                  getDisponibilityColor(item) != 'success' ? 'black' : 'white'
-                "
-                :color="getDisponibilityColor(item)"
-              >
-                {{ getDisponibilityText(item) }}
-              </v-chip>
-            </template>
-            <template v-slot:[`item.actions`]="{ item }">
-              <v-chip
-                class="mr-2"
-                color="info"
-                text-color="black"
-                v-if="item.b_disponibility != 'a'"
-                @click="openSuborderDialog(item)"
-              >
-                <v-icon class="mr-2" small> fas fa-eye </v-icon>
-                Ver
-              </v-chip>
-              <v-chip
-                class="mr-2"
-                color="warning"
-                text-color="black"
-                @click="openUpdateTableDialog(item)"
-              >
-                <v-icon small> fas fa-pen </v-icon>
-              </v-chip>
-              <v-chip
-                class="mr-2"
-                color="error"
-                @click="openDeleteTableDialog(item)"
-              >
-                <v-icon small> fas fa-trash </v-icon>
-              </v-chip>
-            </template>
-          </v-data-table>
-        </v-col>
-      </v-row>
-    </v-container>
+            Se añadió una nueva mesa.
+          </v-alert>
+          <v-alert
+            :value="alertEmptyNewTable"
+            icon="fas fa-exclamation-circle"
+            transition="scale-transition"
+            class="mt-2"
+            type="error"
+          >
+            Debes de asignar una etiqueta o nombre a la mesa.
+          </v-alert>
+        </v-card-text>
+      </v-card>
+    </template>
+
+    <template>
+      <v-card class="mt-5">
+        <v-data-table
+          :headers="headersTables"
+          :items="tables"
+          multi-sort
+          class="elevation-1"
+        >
+          <template v-slot:[`item.b_disponibility`]="{ item }">
+            <v-chip
+              :text-color="
+                getDisponibilityColor(item) != 'success' ? 'black' : 'white'
+              "
+              :color="getDisponibilityColor(item)"
+            >
+              {{ getDisponibilityText(item) }}
+            </v-chip>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-chip
+              class="mr-2"
+              color="info"
+              text-color="black"
+              v-if="item.b_disponibility != 'a'"
+              @click="openSuborderDialog(item)"
+            >
+              <v-icon class="mr-2" small> fas fa-eye </v-icon>
+              Ver
+            </v-chip>
+            <v-chip
+              class="mr-2"
+              color="warning"
+              text-color="black"
+              @click="openUpdateTableDialog(item)"
+            >
+              <v-icon small> fas fa-pen </v-icon>
+            </v-chip>
+            <v-chip
+              class="mr-2"
+              color="error"
+              @click="openDeleteTableDialog(item)"
+            >
+              <v-icon small> fas fa-trash </v-icon>
+            </v-chip>
+          </template>
+        </v-data-table>
+      </v-card>
+    </template>
 
     <v-dialog
       class="toolbar-subtitle"
@@ -118,7 +120,7 @@
     >
       <v-card>
         <v-toolbar class="toolbar-title" color="primary">
-          <v-toolbar-title> Mesa {{ this.actualTag }} </v-toolbar-title>
+          <v-toolbar-title> Mesa "{{ this.actualTag }}" </v-toolbar-title>
         </v-toolbar>
         <v-data-table
           class="container-inside"
@@ -136,7 +138,7 @@
           <v-btn color="primary darken-1" text @click="closeSubordersDialog()">
             Cerrar
           </v-btn>
-          <v-btn color="green darken-1" text @click="openAddSuborderDialog()">
+          <v-btn color="accent darken-1" text @click="openAddSuborderDialog()">
             Agregar Suborden
           </v-btn>
         </v-card-actions>
@@ -152,7 +154,7 @@
         <v-toolbar class="toolbar-title" color="primary">
           <v-toolbar-title> Nuevo pedido </v-toolbar-title>
         </v-toolbar>
-        <v-card-text>
+        <v-card-text class="card-subtitle-custom">
           <v-container>
             <v-row>
               <v-col>
@@ -166,8 +168,6 @@
                   hide-details
                   required
                 ></v-text-field>
-              </v-col>
-              <v-col>
                 <v-select
                   class="mt-2"
                   flat
@@ -178,8 +178,6 @@
                   label="Producto"
                 >
                 </v-select>
-              </v-col>
-              <v-col>
                 <v-text-field
                   class="mt-2"
                   v-model="newSuborder.s_cuantity"
@@ -205,7 +203,7 @@
           >
             Cancelar
           </v-btn>
-          <v-btn color="green darken-1" text @click="addSuborder()">
+          <v-btn color="accent darken-1" text @click="addSuborder()">
             Agregar
           </v-btn>
         </v-card-actions>
@@ -230,6 +228,8 @@
                   v-model="actualTable.b_tag"
                   background-color="greyCustom"
                   label="Nombre o etiqueta de la mesa"
+                  ref="updateTableInput"
+                  @keydown.enter="updateTable()"
                   flat
                   solo
                   hide-details
@@ -237,6 +237,15 @@
                 ></v-text-field>
               </v-col>
             </v-row>
+            <v-alert
+              :value="alertEmptyTableTag"
+              icon="fas fa-exclamation-circle"
+              transition="scale-transition"
+              class="mt-2"
+              type="error"
+            >
+              Debes de asignar una etiqueta o nombre a la mesa.
+            </v-alert>
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -257,8 +266,10 @@
 
     <v-dialog v-model="deleteTableDialog" max-width="300">
       <v-card>
-        <v-card-title class="text-h5"> ¿Estás seguro? </v-card-title>
-        <v-card-text> Esta acción es irreversible. </v-card-text>
+        <v-card-title class="card-title-custom"> ¿Estás seguro? </v-card-title>
+        <v-card-text class="card-subtitle-custom">
+          Esta acción es irreversible.
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -277,8 +288,10 @@
 
     <v-dialog v-model="deleteSuborderDialog" max-width="300">
       <v-card>
-        <v-card-title class="text-h5"> ¿Estás seguro? </v-card-title>
-        <v-card-text> Esta acción es irreversible. </v-card-text>
+        <v-card-title class="card-title-custom"> ¿Estás seguro? </v-card-title>
+        <v-card-text class="card-subtitle-custom">
+          Esta acción es irreversible.
+        </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -358,6 +371,7 @@ export default {
       loadingAddTable: false,
       alertNewTable: false,
       alertEmptyNewTable: false,
+      alertEmptyTableTag: false,
       updateTableDialog: false,
       deleteTableDialog: false,
       deleteSuborderDialog: false,
@@ -403,6 +417,12 @@ export default {
 
       setTimeout(() => (this.alertEmptyNewTable = false), 3000);
     },
+
+    alertEmptyTableTag(value) {
+      if (!value) return;
+
+      setTimeout(() => (this.alertEmptyTableTag = false), 3000);
+    },
   },
 
   methods: {
@@ -424,11 +444,14 @@ export default {
     },
 
     async updateTable() {
-      await this.axios.post("table/updateTable", this.actualTable);
+      if (this.actualTable.b_tag == "") alertEmptyTableTag = true;
+      else {
+        await this.axios.post("table/updateTable", this.actualTable);
 
-      this.closeUpdateTableDialog();
-      this.getTables();
-      this.getActiveTables();
+        this.closeUpdateTableDialog();
+        this.getTables();
+        this.getActiveTables();
+      }
     },
 
     async deleteTable() {
@@ -545,10 +568,12 @@ export default {
       };
 
       this.updateTableDialog = true;
+      setTimeout(() => this.$refs.updateTableInput.focus(), 250);
     },
 
     closeUpdateTableDialog() {
       this.actualTable = {};
+      this.alertEmptyTableTag = false;
       this.updateTableDialog = false;
     },
 
