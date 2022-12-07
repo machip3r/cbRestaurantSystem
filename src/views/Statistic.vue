@@ -1,7 +1,8 @@
 <template>
-  <v-container>
-    <h1>Estadísticas</h1>
-    <v-container>
+  <v-container class="container-inside">
+    <h1 class="toolbar-title">Estadísticas</h1>
+    <br />
+    <template>
       <div class="container-grid">
         <div class="block container-earned-today">
           <v-container>
@@ -20,7 +21,7 @@
           <v-container>
             <v-row>
               <v-col>
-                <h1>Ganancias</h1>
+                <h1>Ganancias por mes</h1>
                 <br />
                 <v-sheet
                   v-if="thereProfits"
@@ -65,7 +66,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="orderDate"
+                          v-model="orderDateFormatted"
                           label="Fecha"
                           prepend-icon="fas fa-calendar-day"
                           readonly
@@ -120,7 +121,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="saleDate"
+                          v-model="saleDateFormatted"
                           label="Fecha"
                           prepend-icon="fas fa-calendar-day"
                           readonly
@@ -199,7 +200,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="employeeDate"
+                          v-model="employeeDateFormatted"
                           label="Fecha"
                           prepend-inner-icon="fas fa-calendar-day"
                           readonly
@@ -298,7 +299,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="tableDate"
+                          v-model="tableDateFormatted"
                           label="Fecha"
                           prepend-inner-icon="fas fa-calendar-day"
                           readonly
@@ -360,7 +361,7 @@
           </v-alert>
         </div>
       </div>
-    </v-container>
+    </template>
     <v-dialog class="toolbar-subtitle" v-model="oDialog" max-width="600">
       <v-card>
         <v-toolbar dark class="toolbar-title" color="primary">
@@ -491,10 +492,16 @@ export default {
 
     todayProfit: "",
     salesPerDate: "",
+    salesPerDateFormatted: "",
     orderDate: "",
+    orderDateFormatted: "",
     saleDate: "",
+    saleDateFormatted: "",
     tableDate: "",
+    tableDateFormatted: "",
     employeeDate: "",
+    employeeDateFormatted: "",
+
     idTable: "",
     idEmployee: "",
     countOrdersPerTable: "",
@@ -527,6 +534,28 @@ export default {
   },
 
   watch: {
+    salesPerDate: "",
+
+    salesPerDate(value) {
+      this.salesPerDateFormatted = this.formatDate(this.salesPerDate);
+    },
+
+    orderDate(value) {
+      this.orderDateFormatted = this.formatDate(this.orderDate);
+    },
+
+    saleDate(value) {
+      this.saleDateFormatted = this.formatDate(this.saleDate);
+    },
+
+    tableDate(value) {
+      this.tableDateFormatted = this.formatDate(this.tableDate);
+    },
+
+    employeeDate(value) {
+      this.employeeDateFormatted = this.formatDate(this.employeeDate);
+    },
+
     alertCountOrdersPerTable(value) {
       if (!value) return;
 
@@ -571,6 +600,22 @@ export default {
   },
 
   methods: {
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+
+      return `${month}/${day}/${year}`;
+    },
+
+    parseDate(date) {
+      if (!date) return null;
+
+      const [month, day, year] = date.split("/");
+
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    },
+
     async getTodayProfit() {
       let dateJS = new Date(),
         date =
@@ -706,8 +751,6 @@ export default {
 
     async getTables() {
       const apiData = await this.axios.get("statistic/allTables/");
-
-      apiData.data.forEach((table) => console.log(table));
 
       apiData.data.forEach((table) =>
         this.tables.push({
