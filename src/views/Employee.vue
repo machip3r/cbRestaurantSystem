@@ -4,7 +4,7 @@
     <br />
     <template>
       <v-card color="grey lighten-4">
-        <v-toolbar dense color="primary">
+        <v-toolbar flat color="primary">
           <v-toolbar-title class="toolbar-title">
             Agregar empleado
           </v-toolbar-title>
@@ -13,102 +13,112 @@
         <v-card-text>
           <template>
             <v-container>
-              <v-row>
-                <v-col cols="5">
-                  <v-text-field
-                    class="mb-n8"
-                    v-model="newEmployee.e_name"
-                    background-color="white"
-                    label="Nombre"
-                    solo
-                    dense
-                    required
-                    flat
-                    hide-details
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="5">
-                  <v-text-field
-                    class="mb-n8"
-                    v-model="newEmployee.e_phone"
-                    background-color="white"
-                    label="Teléfono"
-                    solo
-                    flat
-                    dense
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="5">
-                  <v-text-field
-                    class="mb-n8"
-                    v-model="newEmployee.e_email"
-                    background-color="white"
-                    label="Correo electrónico"
-                    solo
-                    flat
-                    dense
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="5">
-                  <v-text-field
-                    class="mb-n8"
-                    v-model="newEmployee.e_password"
-                    background-color="white"
-                    label="Contraseña"
-                    type="password"
-                    solo
-                    dense
-                    flat
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="2" align-self="center">
-                  <v-row>
-                    <v-btn
-                      class="ml-16"
-                      dark
-                      large
-                      color="accent"
-                      @click="submitForm()"
-                    >
-                      Agregar
-                    </v-btn>
-                  </v-row>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="5">
-                  <v-switch
-                    v-model="newEmployee.e_admin"
-                    inset
-                    label="Administrador"
-                  ></v-switch>
-                </v-col>
-                <!-- <v-col cols="5">
-                  <v-file-input
-                    class="mb-n5"
-                    label="Seleccione su archivo"
-                    filled
-                    v-model="newEmployee.mro_foto"
-                    prepend-icon="fas fa-camera"
-                    background-color="white"
-                    dense
-                    solo
-                    flat
-                  ></v-file-input>
-                </v-col> -->
-              </v-row>
+              <v-form
+                ref="formNewEmployee"
+                v-model="validNewEmployee"
+                lazy-validation
+              >
+                <v-row>
+                  <v-col cols="5">
+                    <v-text-field
+                      class="mb-n8"
+                      v-model="newEmployee.e_name"
+                      background-color="greyCustom"
+                      label="Nombre"
+                      :rules="[(v) => !!v || 'El nombre es obligatorio']"
+                      solo
+                      required
+                      flat
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-text-field
+                      class="mb-n8"
+                      v-model="newEmployee.e_phone"
+                      background-color="greyCustom"
+                      label="Teléfono"
+                      type="number"
+                      :rules="[
+                        (v) =>
+                          (!!v && /^^\d{10}$/.test(v)) ||
+                          'El número de teléfono es obligatorio y debe ser correcto',
+                      ]"
+                      solo
+                      flat
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="2">
+                    <v-row class="mb-2">
+                      <v-switch
+                        v-model="newEmployee.e_admin"
+                        label="Administrador"
+                        color="success"
+                        inset
+                        hide-details
+                      ></v-switch>
+                    </v-row>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="5">
+                    <v-text-field
+                      class="mb-n8"
+                      v-model="newEmployee.e_email"
+                      background-color="greyCustom"
+                      label="Correo electrónico"
+                      type="email"
+                      :rules="[
+                        (v) =>
+                          (!!v &&
+                            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+                              v
+                            )) ||
+                          'El correo electrónico es obligatorio y debe ser correcto',
+                      ]"
+                      solo
+                      flat
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-text-field
+                      class="mb-n8"
+                      v-model="newEmployee.e_password"
+                      background-color="greyCustom"
+                      label="Contraseña"
+                      type="password"
+                      :rules="[(v) => !!v || 'La contraseña es obligatoria']"
+                      solo
+                      flat
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="2" align-self="center">
+                    <v-row justify="center">
+                      <v-btn dark large color="accent" @click="submitForm()">
+                        Agregar
+                      </v-btn>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-form>
+              <v-alert
+                :value="alertNewEmployee"
+                icon="fas fa-check-circle"
+                transition="scale-transition"
+                class="mt-5"
+                type="success"
+              >
+                Se añadió un nuevo empleado.
+              </v-alert>
             </v-container>
           </template>
         </v-card-text>
       </v-card>
     </template>
     <template>
-      <v-container fluid>
+      <v-card class="mt-5">
         <v-card>
           <v-toolbar flat color="primary">
             <v-select
@@ -117,284 +127,232 @@
               solo
               hide-details
               :items="keys"
-              @change="cambio"
-              prepend-inner-icon="fa fa-search"
+              @change="filterChange"
+              background-color="third"
             ></v-select>
           </v-toolbar>
           <v-data-table
             :headers="headers"
             :items="employees"
             multi-sort
-            class="elevation-1"
+            class="food_table"
           >
             <template v-slot:[`item.e_status`]="{ item }">
-              <v-chip :color="getStatusColor(item)">
+              <v-chip
+                :text-color="
+                  getStatusColor(item) != 'success' ? 'black' : 'white'
+                "
+                :color="getStatusColor(item)"
+              >
                 {{ getStatusText(item) }}
               </v-chip>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
-              <v-icon @click="getEmployeeInformation(item)" small>
-                fas fa-eye
-              </v-icon>
-              <v-icon @click="openUpdateEmployeeDialog(item)" small>
-                fas fa-pen
-              </v-icon>
-              <v-icon @click="deleteEmployee(item)" small>
-                fas fa-trash
-              </v-icon>
+              <v-chip
+                class="mr-2"
+                color="info"
+                text-color="black"
+                @click="getEmployeeInformation(item)"
+              >
+                <v-icon class="mr-2" small> fas fa-eye </v-icon>
+                Ver
+              </v-chip>
+              <v-chip
+                class="mr-2"
+                color="warning"
+                text-color="black"
+                @click="openUpdateEmployeeDialog(item)"
+              >
+                <v-icon small> fas fa-pen </v-icon>
+              </v-chip>
+              <v-chip
+                class="mr-2"
+                color="error"
+                @click="openDeleteEmployeeDialog(item)"
+              >
+                <v-icon color="white" small> fas fa-trash </v-icon>
+              </v-chip>
             </template>
           </v-data-table>
         </v-card>
-        <!-- <v-data-iterator
-          :items="employees"
-          item-key="id_employee"
-          hide-default-footer
-        >
-          <template v-slot:header>
-            <v-toolbar dark color="primary" class="mb-1">
-              <v-select
-                v-model="employeeFilter"
-                flat
-                solo-inverted
-                hide-details
-                :items="keys"
-                @change="cambio"
-                prepend-inner-icon="fa fa-search"
-              ></v-select>
-            </v-toolbar>
-          </template>
-          <template>
-            <v-row>
-              <v-col
-                v-for="item in employees"
-                :key="item.id_employee"
-                cols="12"
-                sm="6"
-                md="4"
-                lg="3"
-              >
-                <v-card align="center" align-content="center" justify="center">
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      class="ma-1"
-                      v-on:click="openUpdateEmployeeDialog(item)"
-                      white
-                      icon
-                      color="primary"
-                    >
-                      <v-icon dark> fas fa-pencil-alt </v-icon>
-                    </v-btn>
-                  </v-card-actions>
-
-                  <v-card-text align="center" justify="center">
-                    <p align-self="center">
-                      <v-avatar
-                        class="hgcursor"
-                        align-self="center"
-                        size="200"
-                        v-on:click="getEmployeeInformation(item)"
-                      >
-                        <div
-                          style="
-                            width: 100px;
-                            height: 100px;
-                            background-color: black;
-                          "
-                        ></div>
-                      </v-avatar>
-                    </p>
-                    <h2>{{ item.e_name }}</h2>
-                    <h4>{{ item.e_password }}</h4>
-
-                    <v-chip
-                      class="ma-2"
-                      color="green"
-                      text-color="white"
-                      v-if="item.e_status === 'a'"
-                    >
-                      Activo
-                    </v-chip>
-                    <v-chip class="ma-2" color="red" text-color="white" v-else>
-                      Inactivo
-                    </v-chip>
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-          </template>
-        </v-data-iterator> -->
-      </v-container>
-      <v-dialog v-model="loadingDialog" hide-overlay persistent width="300">
-        <v-card color="primary" dark>
-          <v-card-text>
-            Cargando...
-            <v-progress-linear
-              indeterminate
-              color="white"
-              class="mb-0"
-            ></v-progress-linear>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
+      </v-card>
     </template>
 
-    <v-dialog v-model="updateDialog" max-width="800">
+    <v-dialog v-model="updateEmployeeDialog" max-width="500">
       <v-card>
-        <v-toolbar class="mb-2 text-h5" color="primary">
-          <v-toolbar-title>Editar empleado</v-toolbar-title>
+        <v-toolbar class="toolbar-title" color="primary">
+          <v-toolbar-title> Editar empleado </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <template>
-            <v-row>
-              <v-col cols="12">
-                <v-row>
-                  <v-col cols="3" class="text-right mt-3">
-                    <h3 class="black--text">Nombre</h3>
-                  </v-col>
-                  <v-col cols="9">
-                    <v-text-field
-                      class="mb-n8"
-                      v-model="updatingEmployee.e_name"
-                      background-color="white"
-                      label="Nombre"
-                      solo
-                      outlined
-                      dense
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="3" class="text-right mt-3">
-                    <h3 class="black--text">Dirección</h3>
-                  </v-col>
-                  <v-col cols="9">
-                    <v-text-field
-                      class="mb-n8"
-                      v-model="updatingEmployee.e_phone"
-                      background-color="white"
-                      label="Direccion"
-                      solo
-                      outlined
-                      dense
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="3" class="text-right mt-3">
-                    <h3 class="black--text">Correo electrónico</h3>
-                  </v-col>
-                  <v-col cols="9">
-                    <v-text-field
-                      class="mb-n8"
-                      v-model="updatingEmployee.e_email"
-                      background-color="white"
-                      label="Correo"
-                      solo
-                      outlined
-                      dense
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="3" class="text-right mt-3">
-                    <h3 class="black--text">Numéro de teléfono</h3>
-                  </v-col>
-                  <v-col cols="9">
-                    <v-text-field
-                      class="mb-n8"
-                      v-model="updatingEmployee.e_password"
-                      background-color="white"
-                      label="Telefono"
-                      solo
-                      outlined
-                      dense
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="3" class="text-right mt-3">
-                    <h3 class="black--text">Administrador</h3>
-                  </v-col>
-                  <v-col cols="9">
+          <v-container>
+            <v-form
+              ref="formUpdateEmployee"
+              v-model="validUpdateEmployee"
+              lazy-validation
+            >
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    v-model="actualEmployee.e_name"
+                    :rules="[(v) => !!v || 'El nombre es obligatorio']"
+                    label="Nombre"
+                    background-color="greyCustom"
+                    ref="updateEmployeeNameInput"
+                    flat
+                    solo
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="actualEmployee.e_phone"
+                    :rules="[
+                      (v) =>
+                        (!!v && /^^\d{10}$/.test(v)) ||
+                        'El número de teléfono es obligatorio y debe ser correcto',
+                    ]"
+                    label="Teléfono"
+                    background-color="greyCustom"
+                    type="number"
+                    flat
+                    solo
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="actualEmployee.e_email"
+                    :rules="[
+                      (v) =>
+                        (!!v &&
+                          /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+                            v
+                          )) ||
+                        'El correo electrónico es obligatorio y debe ser correcto',
+                    ]"
+                    label="Correo"
+                    background-color="greyCustom"
+                    type="email"
+                    flat
+                    solo
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="actualEmployee.e_password"
+                    :rules="[(v) => !!v || 'La contraseña es obligatoria']"
+                    label="Contraseña"
+                    background-color="greyCustom"
+                    type="password"
+                    flat
+                    solo
+                    required
+                  ></v-text-field>
+                  <v-row justify="center">
                     <v-switch
-                      v-model="updatingEmployee.e_admin"
+                      v-model="actualEmployee.e_admin"
+                      class="mr-5"
+                      label="Administrador"
+                      color="success"
                       inset
+                      hide-details
                     ></v-switch>
-                  </v-col>
-                  <!-- <v-col cols="3" class="text-right mt-3">
-                    <h3 class="black--text">Foto</h3>
-                  </v-col>
-                  <v-col cols="9">
-                    <v-file-input
-                      class="mb-n5"
-                      label="Seleccione su archivo"
-                      filled
-                      v-model="updatingEmployee.file"
-                      prepend-icon="fas fa-camera"
-                      dense
-                      solo
-                      outlined
-                    ></v-file-input>
-                  </v-col> -->
-                </v-row>
-              </v-col>
-            </v-row>
-          </template>
+                    <v-switch
+                      v-model="updateStatusSwitch"
+                      label="Estado"
+                      key="editar"
+                      color="success"
+                      inset
+                      hide-details
+                    >
+                    </v-switch>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-form>
+
+            <v-alert
+              :value="alertEmptyEmployee"
+              icon="fas fa-exclamation-circle"
+              transition="scale-transition"
+              class="mt-8"
+              type="error"
+            >
+              Debes de poner valores correctos o completos.
+            </v-alert>
+          </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-switch
-            v-model="updateStatusSwitch"
-            label="Activo"
-            key="editar"
-            color="success"
-            hide-details
-          >
-          </v-switch>
-          <v-spacer></v-spacer>
           <v-btn
-            depressed
-            class="l-14"
-            v-on:click="actualizarEmpleado()"
-            color="primary"
+            color="primary darken-1"
+            text
+            @click="closeUpdateEmployeeDialog()"
           >
-            Guardar informacion
+            Cancelar
+          </v-btn>
+          <v-btn color="accent darken-1" text @click="updateEmployee()">
+            Editar
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="employeeDialog" max-width="300" max-height="300">
-      <v-card align="center" align-content="center" justify="center">
-        <v-toolbar class="mb-2 text-h5" color="primary">
-          <v-toolbar-title>{{ selectedEmployee.e_name }}</v-toolbar-title>
-        </v-toolbar>
 
-        <v-card-text align-self="center">
-          <p class="font-weight-black">
-            {{ selectedEmployee.e_phone }}
-          </p>
-          <a href="mailto:`${selectedEmployee.e_email}`" target="_blank">
-            {{ selectedEmployee.e_email }}
-          </a>
-          <p class="font-weight-black">
-            {{ selectedEmployee.e_password }}
-          </p>
-          <p>
-            {{ selectedEmployee.e_admin }}
-          </p>
-          <p>
-            <v-switch
-              v-model="activeInactive"
-              label="Activo"
-              color="success"
-              hide-details
-              @click="changeStatusEmployee"
-            >
-            </v-switch>
-          </p>
+    <v-dialog v-model="deleteEmployeeDialog" max-width="300">
+      <v-card>
+        <v-card-title class="card-title-custom"> ¿Estás seguro? </v-card-title>
+        <v-card-text class="card-subtitle-custom">
+          Esta acción es irreversible.
         </v-card-text>
-        <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="employeeDialog = false">
-            Ok
+          <v-btn
+            color="primary darken-1"
+            text
+            @click="closeDeleteEmployeeDialog()"
+          >
+            Cancelar
+          </v-btn>
+          <v-btn color="error darken-1" text @click="deleteEmployee()">
+            Eliminar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="employeeDialog" max-width="500">
+      <v-card>
+        <v-card-title class="card-title-custom">
+          {{ selectedEmployee.e_name }}
+        </v-card-title>
+        <v-card-text class="card-subtitle-custom mt-4">
+          <v-row>
+            <v-col><h3>Teléfono:</h3></v-col>
+            <v-col>
+              <h3 class="no-bold">{{ selectedEmployee.e_phone }}</h3>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col><h3>Correo electrónico:</h3></v-col>
+            <v-col>
+              <h3 class="no-bold">{{ selectedEmployee.e_email }}</h3>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-switch
+            v-model="activeInactive"
+            class="ml-2 mb-3 card-subtitle-custom"
+            label="Estado"
+            color="success"
+            inset
+            hide-details
+            @click="changeStatusEmployee"
+          >
+          </v-switch>
+          <v-spacer></v-spacer>
+          <v-btn
+            class="mt-3"
+            color="primary darken-1"
+            text
+            @click="closeEmployeeDialog()"
+          >
+            Cerrar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -411,7 +369,7 @@ export default {
       { text: "Teléfono", value: "e_phone" },
       { text: "Correo Electrónico", value: "e_email" },
       { text: "Estado", value: "e_status" },
-      { text: "Acciones", value: "actions" },
+      { text: "Acciones", value: "actions", align: "end" },
     ],
 
     employees: [],
@@ -429,18 +387,26 @@ export default {
       e_password: "",
       e_admin: false,
     },
-    updatingEmployee: {
+    actualEmployee: {
       e_name: "",
       e_phone: "",
       e_email: "",
       e_password: "",
       e_admin: false,
     },
-    loadingDialog: false,
+
+    actualIDEmployee: 0,
+
+    validNewEmployee: false,
+    validUpdateEmployee: false,
+    alertNewEmployee: false,
+    alertEmptyEmployee: false,
+    /* loadingDialog: false, */
     employeeDialog: false,
     activeInactive: true,
-    updateDialog: false,
+    updateEmployeeDialog: false,
     updateStatusSwitch: true,
+    deleteEmployeeDialog: false,
     employeeFilter: "Todos",
     keys: ["Todos", "Activos", "Inactivos"],
   }),
@@ -448,8 +414,22 @@ export default {
   created() {
     this.getAllEmployees();
   },
+
+  watch: {
+    alertNewEmployee(value) {
+      if (!value) return;
+
+      setTimeout(() => (this.alertNewEmployee = false), 3000);
+    },
+    alertEmptyEmployee(value) {
+      if (!value) return;
+
+      setTimeout(() => (this.alertEmptyEmployee = false), 3000);
+    },
+  },
+
   methods: {
-    cambio(event) {
+    filterChange() {
       this.getAllEmployees();
     },
 
@@ -473,9 +453,9 @@ export default {
       this.selectedEmployee.e_name = "";
       this.selectedEmployee.e_password = "";
       this.selectedEmployee.e_email = "";
-      this.selectedEmployee.e_status = "";
+      this.selectedEmployee.e_status = false;
       this.selectedEmployee.e_phone = "";
-      this.selectedEmployee.e_admin = "";
+      this.selectedEmployee.e_admin = false;
       this.selectedEmployee.id_employee = "";
     },
 
@@ -484,62 +464,99 @@ export default {
 
       this.selectedEmployee.e_status == "a" ? (status = "i") : (status = "a");
 
-      await this.axios.put("employee/setStatusEmployee", {
+      const data = {
         id_employee: this.selectedEmployee.id_employee,
         e_status: status,
-      });
+      };
+
+      await this.axios.post("employee/setStatusEmployee", data);
 
       this.getAllEmployees();
       this.employeeDialog = false;
     },
 
-    openUpdateEmployeeDialog(empleado) {
-      this.updatingEmployee.e_name = empleado.e_name;
-      this.updatingEmployee.e_password = empleado.e_password;
-      this.updatingEmployee.e_email = empleado.e_email;
-      this.updatingEmployee.e_status = empleado.e_status;
-      this.updatingEmployee.e_phone = empleado.e_phone;
-      this.updatingEmployee.e_admin = empleado.e_admin;
-      this.updatingEmployee.id_employee = empleado.id_employee;
+    async updateEmployee() {
+      /* this.loadingDialog = true; */
 
-      this.updatingEmployee.e_status == "a"
+      this.actualEmployee.e_admin
+        ? (this.actualEmployee.e_admin = true)
+        : (this.actualEmployee.e_admin = false);
+
+      if (
+        !this.$refs.formUpdateEmployee.validate() &&
+        (this.actualEmployee.id_employee == "" ||
+          this.actualEmployee.id_product == 0 ||
+          this.actualEmployee.e_name == "" ||
+          this.actualEmployee.e_phone == "" ||
+          this.actualEmployee.e_email == "" ||
+          this.actualEmployee.e_password == "")
+      )
+        this.alertEmptyEmployee = true;
+      else {
+        this.updateStatusSwitch
+          ? (this.actualEmployee.e_status = "a")
+          : (this.actualEmployee.e_status = "i");
+
+        await this.axios.post("employee/updateEmployee", this.actualEmployee);
+
+        this.$refs.formUpdateEmployee.reset();
+
+        this.getAllEmployees();
+        /* this.loadingDialog = false; */
+        this.closeUpdateEmployeeDialog();
+      }
+    },
+
+    closeEmployeeDialog() {
+      this.employeeDialog = false;
+    },
+
+    openUpdateEmployeeDialog(employee) {
+      this.actualEmployee = {
+        id_employee: employee.id_employee,
+        e_name: employee.e_name,
+        e_phone: employee.e_phone,
+        e_email: employee.e_email,
+        e_password: employee.e_password,
+        e_admin: employee.e_admin,
+        e_status: employee.e_status,
+      };
+
+      this.actualEmployee.e_status == "a"
         ? (this.updateStatusSwitch = true)
         : (this.updateStatusSwitch = false);
 
-      this.updateDialog = true;
+      this.updateEmployeeDialog = true;
+      setTimeout(() => this.$refs.updateEmployeeNameInput.focus(), 250);
     },
 
-    async actualizarEmpleado() {
-      this.loadingDialog = true;
-
-      this.updateStatusSwitch
-        ? (this.updatingEmployee.e_status = "a")
-        : (this.updatingEmployee.e_status = "i");
-
-      await this.axios.put("employee/updateEmployee", {
-        e_name: this.updatingEmployee.e_name,
-        e_phone: this.updatingEmployee.e_phone,
-        e_email: this.updatingEmployee.e_email,
-        e_password: this.updatingEmployee.e_password,
-        e_admin: this.updatingEmployee.e_admin,
-        e_status: this.updatingEmployee.e_status,
-        id_employee: this.updatingEmployee.id_employee,
-      });
-
-      this.getAllEmployees();
-      this.loadingDialog = false;
-      this.updateDialog = false;
+    closeUpdateEmployeeDialog() {
+      this.actualEmployee = {};
+      this.updateEmployeeDialog = false;
     },
 
-    async deleteEmployee(employee) {
-      this.loadingDialog = true;
+    async deleteEmployee() {
+      /* this.loadingDialog = true; */
+      const data = {
+        id_employee: this.actualIDEmployee,
+      };
 
-      await this.axios.post("employee/deleteEmployee", {
-        id_employee: employee.id_employee,
-      });
+      await this.axios.post("employee/deleteEmployee", data);
+
+      this.closeDeleteEmployeeDialog();
 
       this.getAllEmployees();
-      this.loadingDialog = false;
+      /* this.loadingDialog = false; */
+    },
+
+    openDeleteEmployeeDialog(employee) {
+      this.actualIDEmployee = employee.id_employee;
+      this.deleteEmployeeDialog = true;
+    },
+
+    closeDeleteEmployeeDialog() {
+      this.actualIDEmployee = 0;
+      this.deleteEmployeeDialog = false;
     },
 
     async getAllEmployees() {
@@ -558,24 +575,36 @@ export default {
     },
 
     async submitForm() {
-      this.loadingDialog = true;
+      /* this.loadingDialog = true; */
 
-      await this.axios.post("employee/addEmployee", {
-        e_name: this.newEmployee.e_name,
-        e_phone: this.newEmployee.e_phone,
-        e_email: this.newEmployee.e_email,
-        e_password: this.newEmployee.e_password,
-        e_admin: this.newEmployee.e_admin,
-      });
+      if (this.$refs.formNewEmployee.validate()) {
+        this.newEmployee.e_admin
+          ? (this.newEmployee.e_admin = true)
+          : (this.newEmployee.e_admin = false);
 
-      this.newEmployee.e_name = "";
-      this.newEmployee.e_phone = "";
-      this.newEmployee.e_email = "";
-      this.newEmployee.e_password = "";
-      this.newEmployee.e_admin = false;
+        const data = {
+          e_name: this.newEmployee.e_name,
+          e_phone: this.newEmployee.e_phone,
+          e_email: this.newEmployee.e_email,
+          e_password: this.newEmployee.e_password,
+          e_admin: this.newEmployee.e_admin,
+        };
 
-      this.getAllEmployees();
-      this.loadingDialog = false;
+        await this.axios.post("employee/addEmployee", data);
+
+        this.newEmployee.e_name = "";
+        this.newEmployee.e_phone = "";
+        this.newEmployee.e_email = "";
+        this.newEmployee.e_password = "";
+        this.newEmployee.e_admin = false;
+
+        this.alertNewEmployee = true;
+
+        this.$refs.formNewEmployee.reset();
+
+        this.getAllEmployees();
+        /* this.loadingDialog = false; */
+      }
     },
 
     getStatusText(employee) {
@@ -583,7 +612,7 @@ export default {
     },
 
     getStatusColor(employee) {
-      return employee.e_status == "a" ? "green" : "yellow";
+      return employee.e_status == "a" ? "success" : "warning";
     },
   },
   components: {},
