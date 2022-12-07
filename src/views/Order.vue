@@ -1,11 +1,13 @@
 <template>
-  <v-container>
-    <h1>Órdenes</h1>
+  <v-container class="container-inside">
+    <h1 class="toolbar-title">Órdenes</h1>
     <br />
     <template>
       <v-card color="grey lighten-4">
-        <v-toolbar flat dense color="primary">
-          <v-toolbar-title>Agregar orden</v-toolbar-title>
+        <v-toolbar flat color="primary">
+          <v-toolbar-title class="toolbar-title">
+            Agregar orden
+          </v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-card-text class="container-inside">
@@ -77,7 +79,9 @@
       <v-data-iterator :items="activeOrders" hide-default-footer>
         <template v-slot:header>
           <v-toolbar class="mb-2" color="primary">
-            <v-toolbar-title>Órdenes activas</v-toolbar-title>
+            <v-toolbar-title class="toolbar-title">
+              Órdenes activas
+            </v-toolbar-title>
           </v-toolbar>
         </template>
         <template>
@@ -93,10 +97,12 @@
               <v-card dense color="primary">
                 <v-card-title class="subheading font-weight-bold">
                   <v-toolbar flat color="primary">
-                    <v-toolbar-title> "{{ order.b_tag }}" </v-toolbar-title>
+                    <v-toolbar-title class="toolbar-title">
+                      "{{ order.b_tag }}"
+                    </v-toolbar-title>
                   </v-toolbar>
                   <v-spacer></v-spacer>
-                  <v-btn icon @click="openSubOrderDialog(order)">
+                  <v-btn class="mr-1" icon @click="openSuborderDialog(order)">
                     <v-icon>fas fa-eye</v-icon>
                   </v-btn>
 
@@ -140,7 +146,9 @@
       <v-data-iterator :items="waitingOrders" hide-default-footer>
         <template v-slot:header>
           <v-toolbar class="mb-2" color="secondary">
-            <v-toolbar-title>Órdenes pendientes</v-toolbar-title>
+            <v-toolbar-title class="toolbar-title">
+              Órdenes pendientes
+            </v-toolbar-title>
           </v-toolbar>
         </template>
         <template>
@@ -156,13 +164,15 @@
               <v-card dense color="secondary">
                 <v-card-title class="subheading font-weight-bold">
                   <v-toolbar flat color="secondary">
-                    <v-toolbar-title> "{{ order.b_tag }}" </v-toolbar-title>
+                    <v-toolbar-title class="toolbar-title">
+                      "{{ order.b_tag }}"
+                    </v-toolbar-title>
                   </v-toolbar>
                   <v-spacer></v-spacer>
-                  <v-btn icon @click="openSubOrderDialog(order)">
+                  <v-btn icon @click="openSuborderDialog(order)">
                     <v-icon>fas fa-eye</v-icon>
                   </v-btn>
-                  <v-btn icon @click="openCDeleteDialog(order)">
+                  <v-btn icon @click="openDeleteOrderDialog(order)">
                     <v-icon size="21">fas fa-trash</v-icon>
                   </v-btn>
                 </v-card-title>
@@ -193,10 +203,14 @@
         </template>
       </v-data-iterator>
 
-      <v-dialog v-model="cDeleteDialog" max-width="300">
+      <v-dialog v-model="deleteOrderDialog" max-width="300">
         <v-card>
-          <v-card-title class="text-h5"> ¿Estás seguro? </v-card-title>
-          <v-card-text> Esta acción es irreversible. </v-card-text>
+          <v-card-title class="card-title-custom">
+            ¿Estás seguro?
+          </v-card-title>
+          <v-card-text class="card-subtitle-custom">
+            Esta acción es irreversible.
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary darken-1" text @click="cancelDeleteOrder()">
@@ -211,7 +225,7 @@
 
       <v-dialog
         class="toolbar-subtitle"
-        v-model="subOrdersDialog"
+        v-model="suborderDialog"
         max-width="1000"
       >
         <v-card>
@@ -220,28 +234,24 @@
           </v-toolbar>
           <v-data-table
             class="container-inside"
-            :headers="headersSubOrdersDialog"
-            :items="subOrdersForDialog"
+            :headers="headersSubordersDialog"
+            :items="subordersForDialog"
           >
             <template v-slot:[`item.actions`]="{ item }">
-              <v-icon @click="eliminarSuborden(item)" small>
+              <v-icon @click="openDeleteSuborderDialog(item)" small>
                 fas fa-trash
               </v-icon>
             </template>
           </v-data-table>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="primary darken-1"
-              text
-              @click="closeSubordersDialog()"
-            >
+            <v-btn color="primary darken-1" text @click="closeSuborderDialog()">
               Cerrar
             </v-btn>
             <v-btn
-              color="green darken-1"
+              color="accent darken-1"
               text
-              @click="addSuborderDialog = true"
+              @click="openAddSuborderDialog()"
             >
               Agregar Suborden
             </v-btn>
@@ -258,7 +268,7 @@
           <v-toolbar class="toolbar-title" color="primary">
             <v-toolbar-title> Nuevo pedido </v-toolbar-title>
           </v-toolbar>
-          <v-card-text>
+          <v-card-text class="card-subtitle-custom">
             <v-container>
               <v-row>
                 <v-col>
@@ -272,8 +282,6 @@
                     hide-details
                     required
                   ></v-text-field>
-                </v-col>
-                <v-col>
                   <v-select
                     class="mt-2"
                     flat
@@ -284,8 +292,6 @@
                     label="Producto"
                   >
                   </v-select>
-                </v-col>
-                <v-col>
                   <v-text-field
                     class="mt-2"
                     v-model="newSuborder.s_cuantity"
@@ -311,7 +317,7 @@
             >
               Cancelar
             </v-btn>
-            <v-btn color="green darken-1" text @click="addSuborder()">
+            <v-btn color="accent darken-1" text @click="addSuborder()">
               Agregar
             </v-btn>
           </v-card-actions>
@@ -509,14 +515,14 @@ export default {
       id_board: "",
     },
 
-    cDeleteDialog: false,
+    deleteOrderDialog: false,
     alertNewOrder: false,
     alertEmptyNewOrder: false,
     loader: null,
     loadingAddOrder: false,
 
     // SUBORDERS
-    headersSubOrdersDialog: [
+    headersSubordersDialog: [
       { text: "Etiqueta", value: "s_tag" },
       { text: "Comida", value: "p_name" },
       { text: "Cantidad", value: "s_cuantity" },
@@ -531,9 +537,9 @@ export default {
       s_cuantity: "",
     },
     products: [],
-    subOrdersForDialog: [],
+    subordersForDialog: [],
 
-    subOrdersDialog: false,
+    suborderDialog: false,
     addSuborderDialog: false,
 
     // PAYMENTS
@@ -581,17 +587,17 @@ export default {
       setTimeout(() => (this.alertEmptyNewOrder = false), 3000);
     },
 
-    cDeleteDialog(isOpen) {
+    deleteOrderDialog(isOpen) {
       if (!isOpen) this.order = [];
     },
 
     // SUBORDERS
-    subOrdersDialog(isOpen) {
-      if (!isOpen) this.closeSubordersDialog();
+    suborderDialog(isOpen) {
+      if (!isOpen) this.closeSuborderDialog();
     },
 
     addSuborderDialog(isOpen) {
-      if (!isOpen) this.cancelarAddSub();
+      if (!isOpen) this.closeAddSuborderDialog();
     },
 
     // PAYMENTS
@@ -690,60 +696,66 @@ export default {
 
     cancelDeleteOrder() {
       this.order = [];
-      this.cDeleteDialog = false;
+      this.deleteOrderDialog = false;
     },
 
-    openCDeleteDialog(order) {
+    openDeleteOrderDialog(order) {
       this.order = order;
-      this.cDeleteDialog = true;
+      this.deleteOrderDialog = true;
     },
 
     // SUBORDERS
 
     async getSubordersByTableAndOrder(id_board, id_order) {
-      this.subOrdersDialog = true;
+      this.suborderDialog = true;
 
       const apiData = await this.axios.get(
         "table/allSuborders/" + id_board + "/" + id_order
       );
 
-      this.subOrdersForDialog = apiData.data;
+      this.subordersForDialog = apiData.data;
     },
 
     async getAllProducts() {
-      const apiData = await this.axios.get("/product/allProducts");
+      const apiData = await this.axios.get("product/allProducts");
 
-      apiData.data.forEach((comida) =>
-        this.products.push({
-          text: comida.p_name,
-          value: comida.id_product,
-        })
-      );
+      apiData.data.forEach((product) => {
+        if (product.p_status == "a")
+          this.products.push({
+            text: product.p_name,
+            value: product.id_product,
+          });
+      });
     },
 
-    openSubOrderDialog(order) {
+    openSuborderDialog(order) {
       this.order = order;
-      this.subOrdersDialog = true;
+      this.suborderDialog = true;
       this.getAllProducts();
       this.getSubordersByTableAndOrder(order.id_board, order.id_order);
     },
 
-    cancelarAddSub() {
+    openAddSuborderDialog() {
+      this.addSuborderDialog = true;
+    },
+
+    closeAddSuborderDialog() {
       this.getActiveOrders();
       this.getWaitingOrders();
       this.addSuborderDialog = false;
     },
 
-    closeSubordersDialog() {
+    closeSuborderDialog() {
       this.newSuborder = {
         id_order: "",
         id_product: "",
         s_tag: "",
         s_cuantity: "",
       };
+
       this.getActiveOrders();
       this.getWaitingOrders();
-      this.subOrdersDialog = false;
+      this.suborderDialog = false;
     },
 
     async addSuborder() {
