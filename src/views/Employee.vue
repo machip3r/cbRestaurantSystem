@@ -89,6 +89,7 @@
                       label="Contraseña"
                       type="password"
                       :rules="[(v) => !!v || 'La contraseña es obligatoria']"
+                      @keydown.enter="submitForm()"
                       solo
                       flat
                       required

@@ -19,6 +19,7 @@
                   v-model="newTable.b_tag"
                   background-color="greyCustom"
                   label="Nombre o etiqueta de la mesa"
+                  @keydown.enter="addTable()"
                   flat
                   solo
                   hide-details

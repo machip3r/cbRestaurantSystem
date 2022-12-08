@@ -86,6 +86,7 @@
                         background-color="greyCustom"
                         class="mb-n6 pb-n6"
                         type="number"
+                        @keydown.enter="submitForm()"
                         flat
                         solo
                         required

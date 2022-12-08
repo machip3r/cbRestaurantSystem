@@ -15,23 +15,23 @@
             <v-row justify="center" align="center" align-content="center">
               <v-col cols="6">
                 <v-select
-                  flat
-                  solo-inverted
-                  hide-details
                   :items="employees"
                   v-model="newOrder.id_employee"
                   label="Mesero a cargo"
+                  flat
+                  solo-inverted
+                  hide-details
                 >
                 </v-select>
               </v-col>
               <v-col cols="4">
                 <v-select
-                  flat
-                  solo-inverted
-                  hide-details
                   :items="tables"
                   v-model="newOrder.id_board"
                   label="Mesas disponibles"
+                  flat
+                  solo-inverted
+                  hide-details
                 >
                 </v-select>
               </v-col>
@@ -456,30 +456,38 @@
       </v-dialog>
       <v-dialog v-model="cPaymentDialog" max-width="300">
         <v-card>
-          <v-card-title class="text-h5"> Confirmar pago </v-card-title>
-          <v-card-text> Selecciona un método de pago </v-card-text>
-          <v-form>
-            <v-text-field
-              v-model="newPayment.p_tip"
-              :rule="propinaRules"
-              label="Propina"
-              placeholder="¿Hubo propina?"
-              filled
-              dense
-              class="pl-3 pr-3"
-              required
-            ></v-text-field>
-            <v-select
-              v-model="newPayment.p_type"
-              flat
-              solo-inverted
-              hide-details
-              :items="paymentMethods"
-              label="Método de pago"
-              class="pl-3 pr-3 pb-3"
-            >
-            </v-select>
-          </v-form>
+          <v-card-title class="card-title-custom">
+            Confirmar pago
+          </v-card-title>
+          <v-card-text class="card-subtitle-custom">
+            <v-form class="mt-3">
+              Selecciona un método de pago
+              <v-select
+                v-model="newPayment.p_type"
+                :items="paymentMethods"
+                label="Método de pago"
+                background-color="greyCustom"
+                class="mb-3"
+                flat
+                solo-inverted
+                hide-details
+              >
+              </v-select>
+              Propina
+              <v-text-field
+                v-model="newPayment.p_tip"
+                :rule="propinaRules"
+                label="Propina"
+                placeholder="¿Hubo propina?"
+                background-color="greyCustom"
+                type="number"
+                flat
+                solo
+                hide-details
+                required
+              ></v-text-field>
+            </v-form>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary darken-1" text @click="cancelPayment()">
