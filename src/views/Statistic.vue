@@ -48,7 +48,7 @@
           <v-container>
             <v-row>
               <v-col>
-                <h1 class="medium-title">Órdenes por fecha</h1>
+                <h1 class="large-title">Órdenes por fecha</h1>
                 <v-row
                   class="mt-1 container-inside"
                   justify="center"
@@ -103,7 +103,7 @@
           <v-container>
             <v-row>
               <v-col>
-                <h1 class="medium-title">Ventas por fecha</h1>
+                <h1 class="large-title">Ventas por fecha</h1>
                 <v-row
                   class="mt-1 container-inside"
                   justify="center"
@@ -394,7 +394,7 @@
         <v-data-table
           :headers="headersOrdersTable"
           :items="ordersPerTable"
-          :sort-by="['e_name', 'ord_fecha_hora', 'o_status']"
+          :sort-by="['e_name', 'o_datetime', 'o_status']"
           :sort-desc="[false, true]"
           class="container-inside"
         ></v-data-table>
@@ -425,7 +425,7 @@
         <v-data-table
           :headers="headersOrdersEmployee"
           :items="ordersPerEmployee"
-          :sort-by="['id_board', 'ord_fecha_hora', 'o_status', 'pag_propina']"
+          :sort-by="['id_board', 'o_datetime', 'o_status', 'pag_propina']"
           :sort-desc="[false, true]"
           class="container-inside"
         ></v-data-table>
@@ -460,12 +460,12 @@ export default {
     ],
     headersOrdersTable: [
       { text: "Mesero a cargo", align: "center", value: "e_name" },
-      { text: "Hora", align: "center", value: "ord_fecha_hora" },
+      { text: "Hora", align: "center", value: "o_datetime" },
       { text: "Estado", align: "center", value: "o_status" },
     ],
     headersOrdersEmployee: [
       { text: "Mesa", align: "center", value: "id_board" },
-      { text: "Hora", align: "center", value: "ord_fecha_hora" },
+      { text: "Hora", align: "center", value: "o_datetime" },
       { text: "Estado", align: "center", value: "o_status" },
     ],
     months: [
