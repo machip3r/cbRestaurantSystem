@@ -366,7 +366,7 @@
       <v-card>
         <v-toolbar dark class="toolbar-title" color="primary">
           <v-toolbar-title>
-            Ordenes de la fecha {{ this.orderDate }}
+            Órdenes de la fecha {{ formatDate(this.orderDate) }}
           </v-toolbar-title>
         </v-toolbar>
         <v-data-table
@@ -388,7 +388,7 @@
       <v-card>
         <v-toolbar dark class="toolbar-title" color="primary">
           <v-toolbar-title>
-            Ordenes de la mesa {{ this.idTable }}
+            Órdenes de la mesa "{{ this.tableName }}"
           </v-toolbar-title>
         </v-toolbar>
         <v-data-table
@@ -414,7 +414,7 @@
       <v-card>
         <v-toolbar dark class="toolbar-title" color="primary">
           <v-toolbar-title>
-            Ordenes de
+            Órdenes de
             {{
               typeof ordersPerEmployee[0] !== "undefined"
                 ? ordersPerEmployee[0].e_name
@@ -503,6 +503,7 @@ export default {
     employeeDateFormatted: "",
 
     idTable: "",
+    tableName: "",
     idEmployee: "",
     countOrdersPerTable: "",
     countOrdersPerEmployee: "",
@@ -605,7 +606,7 @@ export default {
 
       const [year, month, day] = date.split("-");
 
-      return `${month}/${day}/${year}`;
+      return `${day}/${month}/${year}`;
     },
 
     parseDate(date) {
@@ -676,6 +677,8 @@ export default {
           apiData.data[i].o_status = "Pagada";
         else apiData.data[i].o_status = "Pendiente";
       }
+
+      this.tableName = apiData.data[0].b_tag;
 
       this.ordersPerTable = apiData.data;
     },
